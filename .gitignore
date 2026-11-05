@@ -30,6 +30,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# loose root media (canonical copies in public/media/)
+/*.jpg
+/*.mp4
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

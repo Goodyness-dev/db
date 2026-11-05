@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { Shield, Lock, Send, AlertTriangle } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -13,7 +12,7 @@ export default function Footer() {
               <span className="font-display font-extrabold text-xl tracking-widest text-text-primary">
                 VAULT
               </span>
-              <span className="text-xs uppercase tracking-widest text-gold font-semibold">
+              <span className="text-xs uppercase tracking-widest text-gold font-semibold font-mono">
                 BY DB
               </span>
             </div>
@@ -25,19 +24,18 @@ export default function Footer() {
                 href="https://t.me/DBGOD1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border flex items-center gap-2 text-text-secondary hover:text-gold hover:border-gold/40 text-xs transition-colors"
+                className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border flex items-center gap-2 text-text-secondary hover:text-gold hover:border-gold/40 text-xs font-mono transition-colors"
                 title="Official Telegram @DBGOD1"
               >
-                <Send className="w-3.5 h-3.5 text-[#229ED9]" />
-                <span>@DBGOD1</span>
+                <span>TG: @DBGOD1 [11.9K] &rarr;</span>
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">
-              Storefront
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary font-mono">
+              STOREFRONT
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -46,9 +44,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="hover:text-gold transition-colors flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />
-                  VIP Club Membership
+                <Link href="/pricing" className="hover:text-gold transition-colors">
+                  [VIP] Club Membership
                 </Link>
               </li>
               <li>
@@ -66,25 +63,23 @@ export default function Footer() {
 
           {/* Discretion & Security */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">
-              Security & Privacy
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary font-mono">
+              SECURITY & PRIVACY
             </h4>
             <div className="space-y-2.5 text-xs text-text-muted">
-              <div className="flex items-start gap-2">
-                <Lock className="w-4 h-4 text-gold shrink-0 mt-0.5" />
-                <span>Discreet billing statement: charges appear neutrally as &quot;VAULT DIGITAL SVCS&quot;.</span>
+              <div>
+                <span className="text-gold font-mono font-semibold">[BILLING]</span> Discreet billing statement: charges appear neutrally as &quot;VAULT DIGITAL SVCS&quot;.
               </div>
-              <div className="flex items-start gap-2">
-                <Shield className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>Zero buyer list sharing. Secure encrypted streaming with watermarking.</span>
+              <div>
+                <span className="text-emerald-400 font-mono font-semibold">[PRIVACY]</span> Zero buyer list sharing. Secure encrypted streaming with dynamic watermarking.
               </div>
             </div>
           </div>
 
           {/* Compliance & Legal */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">
-              Compliance (2257)
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary font-mono">
+              COMPLIANCE (2257)
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -118,11 +113,11 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-text-muted">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-3.5 h-3.5 text-gold" />
-            <span>Strict 18+ adult platform. All depicted individuals were verified 18+ at the time of creation.</span>
+          <div>
+            <span className="font-mono text-gold font-bold mr-2">[18+ ONLY]</span>
+            <span>Strict adult platform. All depicted individuals were verified 18+ at time of filming.</span>
           </div>
-          <p>© {new Date().getFullYear()} VAULT by DB. All rights reserved.</p>
+          <p className="font-mono">© {new Date().getFullYear()} VAULT BY DB. ALL RIGHTS RESERVED.</p>
         </div>
       </div>
     </footer>

@@ -2,17 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  Crown,
-  CreditCard,
-  Calendar,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  ShieldCheck,
-  Receipt,
-  RotateCcw
-} from 'lucide-react';
 import { store } from '@/lib/db/store';
 
 export default function MemberBillingPage() {
@@ -41,14 +30,14 @@ export default function MemberBillingPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 font-mono">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/80 pb-6">
         <div>
-          <h1 className="font-display font-extrabold text-3xl text-text-primary uppercase tracking-tight">
+          <h1 className="font-display font-extrabold text-3xl text-text-primary uppercase tracking-tight font-sans">
             Billing & Membership Management
           </h1>
-          <p className="text-xs sm:text-sm text-text-muted mt-1">
+          <p className="text-xs sm:text-sm text-text-muted mt-1 font-sans">
             Review active VIP subscriptions, next renewal dates, and payment history.
           </p>
         </div>
@@ -60,13 +49,13 @@ export default function MemberBillingPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="fan@example.com"
-            className="px-3 py-1.5 bg-surface-2 border border-border text-xs text-text-primary rounded-lg outline-none"
+            className="px-3 py-1.5 bg-surface-2 border border-border text-xs text-text-primary rounded-lg outline-none font-mono"
           />
           <button
             onClick={() => {
               if (email) localStorage.setItem('vault_member_email', email);
             }}
-            className="px-3 py-1.5 bg-gold text-black text-xs font-bold rounded-lg"
+            className="px-3 py-1.5 bg-gold text-black text-xs font-bold uppercase rounded-lg"
           >
             Update
           </button>
@@ -74,9 +63,8 @@ export default function MemberBillingPage() {
       </div>
 
       {cancelStatus && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 shrink-0" />
-          <span>{cancelStatus}</span>
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono">
+          [ NOTICE ] {cancelStatus}
         </div>
       )}
 
@@ -85,16 +73,15 @@ export default function MemberBillingPage() {
         <div className="md:col-span-2 p-6 sm:p-8 rounded-3xl bg-surface-1 border border-border space-y-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="text-[11px] uppercase tracking-wider font-bold text-gold flex items-center gap-1.5">
-                <Crown className="w-4 h-4" />
-                Active VIP Plan
+              <span className="text-[11px] uppercase tracking-wider font-bold text-gold font-mono">
+                [ ACTIVE VIP PLAN ]
               </span>
-              <h3 className="font-display font-bold text-xl text-text-primary">
+              <h3 className="font-display font-bold text-xl text-text-primary uppercase font-sans">
                 {userSub ? userSub.planName : 'No Active VIP Subscription'}
               </h3>
             </div>
             {userSub && (
-              <span className={`px-3 py-1 text-xs font-bold rounded-full ${
+              <span className={`px-3 py-1 text-xs font-bold rounded-full font-mono uppercase ${
                 userSub.cancelAtPeriodEnd
                   ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                   : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
@@ -105,40 +92,40 @@ export default function MemberBillingPage() {
           </div>
 
           {userSub ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-y border-border/60 py-4 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-y border-border/60 py-4 text-xs font-mono">
               <div>
-                <span className="text-text-muted block">Rate</span>
-                <span className="font-bold text-text-primary text-sm">${(userSub.priceCents / 100).toFixed(2)} / mo</span>
+                <span className="text-text-muted block">RATE</span>
+                <span className="font-bold text-text-primary text-sm">${(userSub.priceCents / 100).toFixed(2)} / MO</span>
               </div>
               <div>
-                <span className="text-text-muted block">Period End</span>
+                <span className="text-text-muted block">PERIOD END</span>
                 <span className="font-bold text-text-primary text-sm">{userSub.currentPeriodEnd.slice(0, 10)}</span>
               </div>
               <div>
-                <span className="text-text-muted block">Auto-Renew</span>
-                <span className="font-bold text-text-primary text-sm">{userSub.cancelAtPeriodEnd ? 'Disabled' : 'Enabled'}</span>
+                <span className="text-text-muted block">AUTO-RENEW</span>
+                <span className="font-bold text-text-primary text-sm">{userSub.cancelAtPeriodEnd ? 'DISABLED' : 'ENABLED'}</span>
               </div>
             </div>
           ) : (
-            <div className="p-4 rounded-xl bg-surface-2 border border-border text-xs text-text-secondary space-y-3">
+            <div className="p-4 rounded-xl bg-surface-2 border border-border text-xs text-text-secondary space-y-3 font-sans">
               <p>You do not currently have an active monthly VIP pass.</p>
               <Link
                 href="/pricing"
-                className="inline-block px-4 py-2 bg-gold hover:bg-gold-light text-black font-bold text-xs rounded-lg transition-all"
+                className="inline-block px-4 py-2 bg-gold hover:bg-gold-light text-black font-mono font-bold text-xs uppercase rounded-lg transition-all"
               >
-                Join VIP Club ($29.99/mo)
+                Join VIP Club ($29.99/mo) &rarr;
               </Link>
             </div>
           )}
 
           {userSub && !userSub.cancelAtPeriodEnd && (
-            <div className="pt-2 flex items-center justify-between">
+            <div className="pt-2 flex items-center justify-between font-mono">
               <span className="text-[11px] text-text-muted">
                 Need to pause or cancel?
               </span>
               <button
                 onClick={handleCancelSub}
-                className="px-4 py-2 bg-surface-2 hover:bg-rose-950/40 text-text-secondary hover:text-rose-300 border border-border hover:border-rose-500/40 text-xs font-semibold rounded-xl transition-all"
+                className="px-4 py-2 bg-surface-2 hover:bg-rose-950/40 text-text-secondary hover:text-rose-300 border border-border hover:border-rose-500/40 text-xs font-semibold rounded-xl transition-all uppercase"
               >
                 Cancel Subscription
               </button>
@@ -147,12 +134,11 @@ export default function MemberBillingPage() {
         </div>
 
         {/* Discreet Billing Information */}
-        <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-4">
-          <div className="flex items-center gap-2 text-gold">
-            <ShieldCheck className="w-5 h-5" />
-            <h4 className="text-xs font-bold uppercase tracking-wider">Discreet Guarantee</h4>
+        <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-4 font-mono">
+          <div className="text-gold">
+            <h4 className="text-xs font-bold uppercase tracking-wider">[ DISCREET GUARANTEE ]</h4>
           </div>
-          <p className="text-xs text-text-secondary leading-relaxed">
+          <p className="text-xs text-text-secondary leading-relaxed font-sans">
             All renewals and transactions appear on bank and card statements as a neutral digital service (&quot;VAULT DIGITAL SVCS&quot;).
           </p>
           <div className="p-3 rounded-xl bg-surface-2 border border-border text-[11px] text-text-muted font-mono">
@@ -163,10 +149,9 @@ export default function MemberBillingPage() {
       </div>
 
       {/* Receipts and Order History */}
-      <div className="space-y-4">
-        <h3 className="font-display font-bold text-xl text-text-primary uppercase tracking-tight flex items-center gap-2">
-          <Receipt className="w-5 h-5 text-gold" />
-          Receipt & Purchase History
+      <div className="space-y-4 font-mono">
+        <h3 className="font-display font-bold text-xl text-text-primary uppercase tracking-tight font-sans">
+          Receipt & Purchase History ({orders.length})
         </h3>
 
         {orders.length === 0 ? (
@@ -175,7 +160,7 @@ export default function MemberBillingPage() {
           </div>
         ) : (
           <div className="overflow-x-auto rounded-2xl border border-border bg-surface-1">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs font-mono">
               <thead className="bg-surface-2 text-text-muted uppercase text-[10px] tracking-wider border-b border-border">
                 <tr>
                   <th className="p-4">Order ID</th>

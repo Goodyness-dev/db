@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import AgeGateModal from '@/components/AgeGateModal';
 
 export const metadata: Metadata = {
@@ -23,10 +22,9 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-background antialiased selection:bg-gold selection:text-black">
         <AgeGateModal />
         <Navbar />
-        <main className="flex-1 pt-20">
+        <main className="flex-1 pt-20 pb-16">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );

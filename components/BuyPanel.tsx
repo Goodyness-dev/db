@@ -2,20 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {
-  Lock,
-  CreditCard,
-  Coins,
-  CheckCircle2,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  Tag,
-  Loader2,
-  Building2,
-  Smartphone
-} from 'lucide-react';
 import { Video, PaymentMethod } from '@/lib/types';
+import { store } from '@/lib/db/store';
 
 interface BuyPanelProps {
   video: Video;
@@ -78,6 +66,16 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
         throw new Error(data.error || 'Failed to initiate checkout.');
       }
 
+      // Record in client-side store for cross-tab demo sync
+      store.createOrder({
+        id: data.orderId,
+        email,
+        totalCents: data.totalCents || calculateTotal(),
+        processor: paymentMethod,
+        videoId: video.id,
+        videoTitle: video.title,
+      });
+
       window.location.href = data.checkoutUrl;
     } catch (err: unknown) {
       setErrorMessage((err as Error)?.message || 'Payment initiation failed.');
@@ -88,15 +86,12 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
   if (video.isSubscriptionOnly) {
     return (
       <div className="bg-surface-1 border border-gold/40 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="flex items-center gap-2 text-gold">
-          <Sparkles className="w-5 h-5" />
-          <span className="text-xs uppercase font-extrabold tracking-widest">VIP Club Exclusive</span>
+        <div className="text-gold">
+          <span className="text-xs uppercase font-mono font-bold tracking-widest">[ VIP CLUB EXCLUSIVE ]</span>
         </div>
 
         <div>
-          <h3 className="text-xl font-display font-bold text-text-primary">
+          <h3 className="text-xl font-display font-bold text-text-primary uppercase tracking-tight">
             Locked Inside The Vault
           </h3>
           <p className="mt-2 text-xs text-text-secondary leading-relaxed">
@@ -106,21 +101,19 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
 
         <div className="p-4 rounded-xl bg-surface-2 border border-border space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-text-secondary">VIP All-Access Pass</span>
+            <span className="text-text-secondary font-medium">VIP All-Access Pass</span>
             <span className="font-display font-bold text-gold text-lg">$29.99 / mo</span>
           </div>
-          <div className="text-[11px] text-text-muted flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-gold" />
-            <span>Apple Pay, Cash App, Wire & Crypto accepted. Cancel anytime.</span>
+          <div className="text-[11px] text-text-muted font-mono">
+            • Apple Pay, Cash App, Wire & Crypto accepted. Cancel anytime.
           </div>
         </div>
 
         <Link
           href="/pricing"
-          className="w-full py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-gold/25 hover:scale-[1.02] transition-all"
+          className="w-full py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center shadow-lg shadow-gold/25 hover:scale-[1.02] transition-all"
         >
-          Join VIP Club — Unlock Instantly
-          <ArrowRight className="w-4 h-4" />
+          Join VIP Club — Unlock Instantly &rarr;
         </Link>
       </div>
     );
@@ -133,20 +126,20 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
       {/* Price Header */}
       <div className="flex items-baseline justify-between border-b border-border/80 pb-4">
         <div>
-          <span className="text-xs uppercase font-semibold text-text-muted block">Direct Drop Purchase</span>
+          <span className="text-xs uppercase font-mono text-text-muted block">Direct Drop Purchase</span>
           <div className="flex items-baseline gap-2 mt-0.5">
             <span className="font-display font-black text-3xl text-text-primary">
               ${(finalCents / 100).toFixed(2)}
             </span>
             {appliedPromo && (
-              <span className="text-xs line-through text-text-muted">
+              <span className="text-xs line-through text-text-muted font-mono">
                 ${(video.priceCents / 100).toFixed(2)}
               </span>
             )}
           </div>
         </div>
-        <span className="px-3 py-1 text-xs font-bold bg-gold/10 border border-gold/30 text-gold rounded-full">
-          Lifetime Access
+        <span className="px-3 py-1 text-[11px] font-mono font-bold bg-gold/10 border border-gold/30 text-gold rounded-full">
+          LIFETIME ACCESS
         </span>
       </div>
 
@@ -154,10 +147,10 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
       <form onSubmit={handleCheckout} className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="text-xs font-medium text-text-secondary">
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
               Your Email (Private Access Link)
             </label>
-            <span className="text-[10px] text-gold">100% Discreet • Not on OF file</span>
+            <span className="text-[10px] font-mono text-gold">[ DISCREET BILLING ]</span>
           </div>
           <input
             type="email"
@@ -171,7 +164,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
 
         {/* Payment Method Selector Grid */}
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">
             Select Payment Method
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -179,104 +172,85 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
             <button
               type="button"
               onClick={() => setPaymentMethod('apple_pay')}
-              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-bold uppercase transition-all ${
                 paymentMethod === 'apple_pay'
                   ? 'border-white bg-white text-black shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <span className="font-bold"> Pay</span>
+              Apple Pay
             </button>
 
             {/* Cash App */}
             <button
               type="button"
               onClick={() => setPaymentMethod('cashapp')}
-              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-bold uppercase transition-all ${
                 paymentMethod === 'cashapp'
                   ? 'border-emerald-400 bg-[#00D632]/15 text-emerald-400 shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <span className="text-emerald-400 font-black">$</span>
-              <span>Cash App</span>
+              Cash App
             </button>
 
             {/* Wire Transfer */}
             <button
               type="button"
               onClick={() => setPaymentMethod('wire')}
-              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-bold uppercase transition-all ${
                 paymentMethod === 'wire'
                   ? 'border-gold bg-gold/15 text-gold shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Wire / Bank</span>
+              Wire / ACH
             </button>
 
             {/* Credit Card */}
             <button
               type="button"
               onClick={() => setPaymentMethod('card')}
-              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-bold uppercase transition-all ${
                 paymentMethod === 'card'
                   ? 'border-gold bg-gold/15 text-gold shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <CreditCard className="w-3.5 h-3.5" />
-              <span>Credit Card</span>
+              Credit Card
             </button>
 
             {/* Crypto */}
             <button
               type="button"
               onClick={() => setPaymentMethod('crypto')}
-              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all col-span-2 sm:col-span-2 ${
+              className={`p-2.5 rounded-xl border text-xs font-bold uppercase transition-all col-span-2 sm:col-span-2 ${
                 paymentMethod === 'crypto'
                   ? 'border-gold bg-gold/15 text-gold shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <Coins className="w-3.5 h-3.5" />
-              <span>Crypto (USDT / BTC)</span>
+              Crypto (USDT / BTC)
             </button>
           </div>
         </div>
 
         {/* Context helper for selected method */}
-        <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/70 text-[11px] text-text-muted">
+        <div className="p-3 rounded-xl bg-surface-2/60 border border-border/70 text-[11px] text-text-muted font-mono">
           {paymentMethod === 'apple_pay' && (
-            <div className="flex items-center gap-2 text-text-primary">
-              <Smartphone className="w-3.5 h-3.5 text-gold" />
-              <span>Instant 1-tap checkout with Apple Wallet & Touch/Face ID.</span>
-            </div>
+            <span className="text-text-primary">• Instant 1-tap checkout with Apple Wallet & Touch/Face ID.</span>
           )}
           {paymentMethod === 'cashapp' && (
-            <div className="flex items-center gap-2 text-emerald-400">
-              <span className="font-bold text-xs">$</span>
-              <span>Send directly to DB&apos;s verified Cashtag <strong>$DBGOD1</strong>. Instant auto-unlock.</span>
-            </div>
+            <span className="text-emerald-400">• Send directly to DB&apos;s verified Cashtag $DBGOD1. Instant auto-unlock.</span>
           )}
           {paymentMethod === 'wire' && (
-            <div className="flex items-center gap-2 text-gold">
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Direct Domestic & International Wire / ACH. Invoice reference generated on next step.</span>
-            </div>
+            <span className="text-gold">• Direct Domestic & International Wire / ACH. Invoice reference generated on next step.</span>
           )}
           {paymentMethod === 'card' && (
-            <div className="flex items-center gap-2 text-text-secondary">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Discreet neutral statement: &quot;VAULT DIGITAL SVCS&quot;.</span>
-            </div>
+            <span className="text-text-secondary">• Discreet neutral statement: &quot;VAULT DIGITAL SVCS&quot;.</span>
           )}
           {paymentMethod === 'crypto' && (
-            <div className="flex items-center gap-2 text-amber-300">
-              <Coins className="w-3.5 h-3.5" />
-              <span>Zero-trail payment via USDT (TRC-20 / ERC-20) or Bitcoin.</span>
-            </div>
+            <span className="text-amber-300">• Zero-trail payment via USDT (TRC-20 / ERC-20) or Bitcoin.</span>
           )}
         </div>
 
@@ -288,27 +262,26 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
               value={promoInput}
               onChange={(e) => setPromoInput(e.target.value)}
               placeholder="Promo code (e.g. DBVIP)"
-              className="flex-1 px-3 py-2 bg-surface-2 border border-border focus:border-gold rounded-lg text-xs text-text-primary placeholder:text-text-muted outline-none uppercase"
+              className="flex-1 px-3 py-2 bg-surface-2 border border-border focus:border-gold rounded-lg text-xs text-text-primary placeholder:text-text-muted outline-none uppercase font-mono"
             />
             <button
               type="button"
               onClick={handleApplyPromo}
-              className="px-3.5 py-2 bg-surface-3 hover:bg-surface-2 text-text-primary text-xs font-medium rounded-lg border border-border"
+              className="px-3.5 py-2 bg-surface-3 hover:bg-surface-2 text-text-primary text-xs font-bold uppercase rounded-lg border border-border"
             >
               Apply
             </button>
           </div>
           {appliedPromo && (
-            <p className="mt-1.5 text-xs text-emerald-400 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Code {appliedPromo.code} applied ({appliedPromo.percentOff}% off)!
+            <p className="mt-1.5 text-xs text-emerald-400 font-mono">
+              [APPLIED] Code {appliedPromo.code} ({appliedPromo.percentOff}% off)!
             </p>
           )}
-          {promoError && <p className="mt-1.5 text-xs text-rose-400">{promoError}</p>}
+          {promoError && <p className="mt-1.5 text-xs text-rose-400 font-mono">{promoError}</p>}
         </div>
 
         {errorMessage && (
-          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono">
             {errorMessage}
           </div>
         )}
@@ -317,7 +290,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full py-4 font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50 ${
+          className={`w-full py-4 font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center shadow-lg transition-all disabled:opacity-50 ${
             paymentMethod === 'apple_pay'
               ? 'bg-white hover:bg-neutral-100 text-black shadow-white/10 hover:scale-[1.01]'
               : paymentMethod === 'cashapp'
@@ -326,43 +299,23 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
           }`}
         >
           {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Connecting Gateway...
-            </>
+            <span>Connecting Gateway...</span>
           ) : paymentMethod === 'apple_pay' ? (
-            <>
-              <span>Pay with Pay — ${(finalCents / 100).toFixed(2)}</span>
-            </>
+            <span>Pay with Apple Pay — ${(finalCents / 100).toFixed(2)}</span>
           ) : paymentMethod === 'cashapp' ? (
-            <>
-              <span className="font-extrabold">$</span>
-              <span>Pay with Cash App — ${(finalCents / 100).toFixed(2)}</span>
-            </>
+            <span>Pay with Cash App ($DBGOD1) — ${(finalCents / 100).toFixed(2)}</span>
           ) : paymentMethod === 'wire' ? (
-            <>
-              <Building2 className="w-4 h-4" />
-              <span>Get Wire Details — ${(finalCents / 100).toFixed(2)}</span>
-            </>
+            <span>Get Wire Instructions — ${(finalCents / 100).toFixed(2)}</span>
           ) : (
-            <>
-              <Lock className="w-4 h-4" />
-              <span>Instant Unlock — ${(finalCents / 100).toFixed(2)}</span>
-            </>
+            <span>Instant Unlock — ${(finalCents / 100).toFixed(2)}</span>
           )}
         </button>
       </form>
 
       {/* Discretion statement */}
-      <div className="space-y-2 text-[11px] text-text-muted border-t border-border/60 pt-4">
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>Discreet statement charge: &quot;VAULT DIGITAL SVCS&quot;</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-gold shrink-0" />
-          <span>Immediate streaming token generated right after approval.</span>
-        </div>
+      <div className="space-y-1.5 text-[11px] text-text-muted border-t border-border/60 pt-4 font-mono">
+        <div>• Discreet statement charge: &quot;VAULT DIGITAL SVCS&quot;</div>
+        <div>• Immediate streaming token generated right after approval.</div>
       </div>
 
       {/* Upsell to VIP */}
@@ -372,9 +325,8 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
         </p>
         <Link
           href="/pricing"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-gold hover:underline"
+          className="inline-block text-xs font-bold uppercase tracking-wider text-gold hover:underline"
         >
-          <Sparkles className="w-3.5 h-3.5" />
           Get DB VIP Club Pass for $29.99/mo &rarr;
         </Link>
       </div>

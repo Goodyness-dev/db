@@ -20,7 +20,7 @@ import {
   INITIAL_TAKEDOWNS,
 } from './mock-data';
 
-// Singleton in-memory store for server-side Next.js route handlers
+// Singleton in-memory store for server-side Next.js route handlers and cross-tab synced demo store
 class VaultStore {
   private videos: Video[] = [...INITIAL_VIDEOS];
   private categories: Category[] = [...INITIAL_CATEGORIES];
@@ -57,6 +57,88 @@ class VaultStore {
   private promoCodes: PromoCode[] = [...INITIAL_PROMO_CODES];
   private complianceRecords: ComplianceRecord[] = [...INITIAL_COMPLIANCE_RECORDS];
   private takedowns: TakedownRequest[] = [...INITIAL_TAKEDOWNS];
+
+  constructor() {
+    this.initBrowserSync();
+  }
+
+  private initBrowserSync() {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedOrders = localStorage.getItem('vault_orders');
+        if (savedOrders) {
+          const parsed = JSON.parse(savedOrders) as Order[];
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // Merge saved orders with initial ones avoiding duplicates
+            const orderMap = new Map<string, Order>();
+            parsed.forEach((o) => orderMap.set(o.id, o));
+            this.orders.forEach((o) => {
+              if (!orderMap.has(o.id)) orderMap.set(o.id, o);
+            });
+            this.orders = Array.from(orderMap.values());
+          }
+        } else {
+          localStorage.setItem('vault_orders', JSON.stringify(this.orders));
+        }
+
+        const savedSubs = localStorage.getItem('vault_subscriptions');
+        if (savedSubs) {
+          const parsed = JSON.parse(savedSubs) as Subscription[];
+          if (Array.isArray(parsed)) this.subscriptions = parsed;
+        }
+
+        // Listen for storage / broadcast events from other tabs
+        window.addEventListener('storage', (e) => {
+          if (e.key === 'vault_orders' && e.newValue) {
+            try {
+              this.orders = JSON.parse(e.newValue);
+            } catch (_) {}
+          }
+        });
+
+        if (typeof BroadcastChannel !== 'undefined') {
+          const bc = new BroadcastChannel('vault_live_sync');
+          bc.onmessage = (msg) => {
+            if (msg.data?.type === 'ORDER_UPDATE') {
+              this.reloadFromLocalStorage();
+            }
+          };
+        }
+      } catch (e) {
+        // Safe fallback in restricted environments
+      }
+    }
+  }
+
+  private reloadFromLocalStorage() {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('vault_orders');
+        if (raw) {
+          this.orders = JSON.parse(raw);
+        }
+      } catch (_) {}
+    }
+  }
+
+  private persist() {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('vault_orders', JSON.stringify(this.orders));
+        localStorage.setItem('vault_subscriptions', JSON.stringify(this.subscriptions));
+        localStorage.setItem('vault_entitlements', JSON.stringify(this.entitlements));
+        localStorage.setItem('vault_last_update', Date.now().toString());
+
+        if (typeof BroadcastChannel !== 'undefined') {
+          const bc = new BroadcastChannel('vault_live_sync');
+          bc.postMessage({ type: 'ORDER_UPDATE', timestamp: Date.now() });
+          bc.close();
+        }
+
+        window.dispatchEvent(new CustomEvent('vault_live_order_event'));
+      } catch (_) {}
+    }
+  }
 
   // Payment configuration for Apple Pay, Cash App, Wire Transfer
   private paymentConfig: PaymentConfig = {
@@ -124,14 +206,17 @@ class VaultStore {
 
   // Orders
   getOrders(): Order[] {
+    this.reloadFromLocalStorage();
     return this.orders;
   }
 
   getOrderById(id: string): Order | undefined {
+    this.reloadFromLocalStorage();
     return this.orders.find((o) => o.id === id);
   }
 
   createOrder(data: {
+    id?: string;
     email: string;
     totalCents: number;
     videoId?: string;
@@ -142,7 +227,13 @@ class VaultStore {
     cashAppCashtag?: string;
     wireReference?: string;
   }): Order {
-    const orderId = `ord-${Math.floor(1000 + Math.random() * 9000)}`;
+    this.reloadFromLocalStorage();
+    const orderId = data.id || `ord-${Math.floor(1000 + Math.random() * 9000)}`;
+    const existing = this.orders.find((o) => o.id === orderId);
+    if (existing) {
+      return existing;
+    }
+
     const order: Order = {
       id: orderId,
       userId: `usr-${Buffer.from(data.email).toString('hex').slice(0, 8)}`,
@@ -162,14 +253,34 @@ class VaultStore {
       createdAt: new Date().toISOString(),
     };
     this.orders.unshift(order);
+    this.persist();
     return order;
   }
 
   markOrderPaid(orderId: string): Order | undefined {
-    const order = this.orders.find((o) => o.id === orderId);
-    if (!order) return undefined;
-    order.status = 'paid';
-    order.paidAt = new Date().toISOString();
+    this.reloadFromLocalStorage();
+    let order = this.orders.find((o) => o.id === orderId);
+    if (!order) {
+      // Create a paid order fallback for demo instant gratification
+      order = {
+        id: orderId,
+        userId: `usr-demo-${Date.now().toString().slice(-4)}`,
+        email: 'collector.vip@gmail.com',
+        status: 'paid',
+        totalCents: 2499,
+        currency: 'USD',
+        processor: 'apple_pay',
+        processorSessionId: `sess_${Date.now()}`,
+        videoTitle: 'DROP 02: PENTHOUSE AFTERHOURS [RAW]',
+        ipHash: Math.random().toString(16).substring(2, 14),
+        createdAt: new Date().toISOString(),
+        paidAt: new Date().toISOString(),
+      };
+      this.orders.unshift(order);
+    } else {
+      order.status = 'paid';
+      order.paidAt = new Date().toISOString();
+    }
 
     // Automatically generate entitlement
     if (order.videoId) {
@@ -184,10 +295,12 @@ class VaultStore {
       });
     }
 
+    this.persist();
     return order;
   }
 
   refundOrder(orderId: string): Order | undefined {
+    this.reloadFromLocalStorage();
     const order = this.orders.find((o) => o.id === orderId);
     if (!order) return undefined;
     order.status = 'refunded';
@@ -201,6 +314,7 @@ class VaultStore {
         ent.revokedAt = new Date().toISOString();
       }
     }
+    this.persist();
     return order;
   }
 

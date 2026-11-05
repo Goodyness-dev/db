@@ -1,16 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize,
-  RotateCcw,
-  ShieldCheck,
-  Sparkles
-} from 'lucide-react';
 
 interface PlayerProps {
   streamUrl: string;
@@ -145,8 +135,8 @@ export default function Player({
 
       {/* Security Token Verified Tag */}
       <div className="absolute top-4 left-4 z-20 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-border text-[10px] text-text-secondary backdrop-blur-md">
-          <ShieldCheck className="w-3 h-3 text-gold" />
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-border text-[10px] font-mono text-text-secondary backdrop-blur-md">
+          <span className="text-gold font-bold">[VERIFIED]</span>
           <span>Encrypted Session • 4K Stream</span>
         </div>
       </div>
@@ -157,8 +147,8 @@ export default function Player({
           onClick={togglePlay}
           className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 cursor-pointer backdrop-blur-[2px] transition-all"
         >
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gold/90 hover:bg-gold text-black flex items-center justify-center shadow-2xl shadow-gold/40 hover:scale-110 transition-all">
-            <Play className="w-8 h-8 fill-current ml-1" />
+          <div className="px-6 py-3 rounded-full bg-gold/90 hover:bg-gold text-black font-mono font-bold text-sm tracking-wider shadow-2xl shadow-gold/40 hover:scale-105 transition-all">
+            [ PLAY STREAM ]
           </div>
         </div>
       )}
@@ -182,28 +172,27 @@ export default function Player({
         </div>
 
         {/* Buttons and timestamps */}
-        <div className="flex items-center justify-between text-text-primary text-xs sm:text-sm">
+        <div className="flex items-center justify-between text-text-primary text-xs font-mono">
           <div className="flex items-center gap-4">
             <button
               onClick={togglePlay}
-              className="p-1.5 hover:text-gold transition-colors focus:outline-none"
+              className="px-2.5 py-1 bg-surface-2 hover:bg-gold hover:text-black rounded border border-border transition-colors font-bold"
             >
-              {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
+              {isPlaying ? 'PAUSE' : 'PLAY'}
             </button>
 
             <button
               onClick={() => {
                 if (videoRef.current) videoRef.current.currentTime = Math.max(0, currentTime - 10);
               }}
-              className="p-1.5 text-text-secondary hover:text-text-primary transition-colors hidden sm:block"
-              title="Rewind 10s"
+              className="px-2 py-1 bg-surface-2 hover:bg-surface-3 text-text-secondary hover:text-text-primary rounded border border-border transition-colors hidden sm:block"
             >
-              <RotateCcw className="w-4 h-4" />
+              -10S
             </button>
 
             <div className="flex items-center gap-2">
-              <button onClick={toggleMute} className="hover:text-gold transition-colors">
-                {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              <button onClick={toggleMute} className="px-2 py-1 bg-surface-2 hover:text-gold rounded border border-border transition-colors">
+                {isMuted || volume === 0 ? 'MUTED' : 'AUDIO'}
               </button>
               <input
                 type="range"
@@ -222,11 +211,11 @@ export default function Player({
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-surface-2 border border-border text-gold rounded">
+            <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-surface-2 border border-border text-gold rounded font-mono">
               4K 60FPS
             </span>
-            <button onClick={toggleFullscreen} className="p-1.5 hover:text-gold transition-colors">
-              <Maximize className="w-4 h-4" />
+            <button onClick={toggleFullscreen} className="px-2 py-1 bg-surface-2 hover:text-gold rounded border border-border transition-colors font-bold">
+              [ FULLSCREEN ]
             </button>
           </div>
         </div>

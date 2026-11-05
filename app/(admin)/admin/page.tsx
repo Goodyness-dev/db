@@ -1,31 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  DollarSign,
-  Users,
-  Film,
-  ShoppingCart,
-  TrendingUp,
-  ShieldCheck,
-  Plus,
-  Search,
-  RotateCcw,
-  CheckCircle2,
-  AlertTriangle,
-  Lock,
-  Send,
-  Eye,
-  Trash2,
-  Sparkles,
-  ExternalLink,
-  CreditCard,
-  Building,
-  Smartphone,
-  Save,
-  Check
-} from 'lucide-react';
 import { store } from '@/lib/db/store';
 import { INITIAL_VIDEOS, INITIAL_CATEGORIES } from '@/lib/db/mock-data';
 import AdminSidebar from '@/components/AdminSidebar';
@@ -35,33 +11,33 @@ function PaymentMethodBadge({ method }: { method: string }) {
   switch (method) {
     case 'apple_pay':
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-neutral-800 text-white border border-neutral-700">
-          <span></span> Apple Pay
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-neutral-800 text-white border border-neutral-700">
+          APPLE PAY
         </span>
       );
     case 'cashapp':
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#00D632]/15 text-[#00D632] border border-[#00D632]/40">
-          Cash App
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#00D632]/15 text-[#00D632] border border-[#00D632]/40">
+          CASH APP
         </span>
       );
     case 'wire':
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-sky-500/15 text-sky-400 border border-sky-500/30">
-          Wire / ACH
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-sky-500/15 text-sky-400 border border-sky-500/30">
+          WIRE / ACH
         </span>
       );
     case 'crypto':
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/15 text-amber-400 border border-amber-500/30">
-          Crypto
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-amber-500/15 text-amber-400 border border-amber-500/30">
+          CRYPTO
         </span>
       );
     case 'card':
     default:
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-purple-500/15 text-purple-300 border border-purple-500/30">
-          Card
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-purple-500/15 text-purple-300 border border-purple-500/30">
+          CARD
         </span>
       );
   }
@@ -80,11 +56,50 @@ export default function AdminPage() {
   // Payment configuration state
   const [paymentConfig, setPaymentConfig] = useState<PaymentConfig>(store.getPaymentConfig());
   const [configSaved, setConfigSaved] = useState(false);
+  const [lastPaymentAlert, setLastPaymentAlert] = useState<string | null>(null);
 
   // Search & filter
   const [orderSearch, setOrderSearch] = useState('');
   const [newVideoModal, setNewVideoModal] = useState(false);
   const [telegramAlertsEnabled, setTelegramAlertsEnabled] = useState(true);
+
+  // Cross-tab real-time demo synchronization
+  useEffect(() => {
+    let prevCount = orders.length;
+
+    const handleSync = () => {
+      const latestOrders = store.getOrders();
+      const latestSubs = store.getSubscriptions();
+
+      if (latestOrders.length > prevCount && latestOrders[0]) {
+        const newest = latestOrders[0];
+        setLastPaymentAlert(`⚡ NEW PAYMENT RECEIVED: $${(newest.totalCents / 100).toFixed(2)} via ${newest.processor.toUpperCase()}`);
+        setTimeout(() => setLastPaymentAlert(null), 6000);
+      }
+      prevCount = latestOrders.length;
+
+      setOrders([...latestOrders]);
+      setSubscriptions([...latestSubs]);
+    };
+
+    window.addEventListener('storage', handleSync);
+    window.addEventListener('vault_live_order_event', handleSync);
+
+    let bc: BroadcastChannel | null = null;
+    if (typeof BroadcastChannel !== 'undefined') {
+      bc = new BroadcastChannel('vault_live_sync');
+      bc.onmessage = () => handleSync();
+    }
+
+    const interval = setInterval(handleSync, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleSync);
+      window.removeEventListener('vault_live_order_event', handleSync);
+      if (bc) bc.close();
+      clearInterval(interval);
+    };
+  }, [orders.length]);
 
   // New video form
   const [newVideoForm, setNewVideoForm] = useState({
@@ -102,7 +117,12 @@ export default function AdminPage() {
     durationSeconds: 1200,
   });
 
-  const metrics = store.getMetrics();
+  // Calculate live dynamic metrics from current orders & subscriptions
+  const paidOrders = orders.filter((o) => o.status === 'paid');
+  const totalRevenueCents = paidOrders.reduce((sum, o) => sum + o.totalCents, 0);
+  const activeSubs = subscriptions.filter((s) => s.status === 'active');
+  const mrrCents = activeSubs.reduce((sum, s) => sum + s.priceCents, 0);
+  const totalViews = videos.reduce((sum, v) => sum + v.viewCount, 0);
 
   // Handlers
   const handleRefund = (orderId: string) => {
@@ -139,7 +159,7 @@ export default function AdminPage() {
     const slug = newVideoForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const cat = INITIAL_CATEGORIES.find((c) => c.id === newVideoForm.categoryId);
 
-    const created = store.createVideo({
+    store.createVideo({
       slug: slug || `drop-${Date.now()}`,
       title: newVideoForm.title,
       description: newVideoForm.description,
@@ -176,12 +196,19 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Real-time Order Alert Toast Banner */}
+      {lastPaymentAlert && (
+        <div className="p-4 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-mono text-xs font-bold flex items-center justify-between shadow-2xl animate-in slide-in-from-top-2">
+          <span>{lastPaymentAlert}</span>
+          <span className="text-[10px] text-emerald-400 bg-emerald-500/30 px-2 py-0.5 rounded">JUST NOW</span>
+        </div>
+      )}
+
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-bold uppercase tracking-wider mb-2">
-            <Lock className="w-3.5 h-3.5" />
-            Authenticated Admin • DB Master Control
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-bold uppercase tracking-wider mb-2">
+            [ ROOT ] Authenticated Admin • DB Master Control
           </div>
           <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-text-primary tracking-tight uppercase">
             CREATOR CONTROL CENTER
@@ -191,10 +218,9 @@ export default function AdminPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setNewVideoModal(true)}
-            className="px-4 py-2.5 bg-gold hover:bg-gold-light text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-gold/20 flex items-center gap-2"
+            className="px-4 py-2.5 bg-gold hover:bg-gold-light text-black font-mono font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-gold/20"
           >
-            <Plus className="w-4 h-4" />
-            Publish New Drop
+            + PUBLISH NEW DROP
           </button>
         </div>
       </div>
@@ -211,54 +237,54 @@ export default function AdminPage() {
               {/* Metric Cards Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
-                  <div className="flex items-center justify-between text-xs text-text-muted">
-                    <span>Monthly Recurring (MRR)</span>
-                    <DollarSign className="w-4 h-4 text-gold" />
+                  <div className="flex items-center justify-between text-xs text-text-muted font-mono">
+                    <span>MRR</span>
+                    <span className="text-gold font-bold">[ MONTHLY ]</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
-                    ${(metrics.mrrCents / 100).toFixed(2)}
+                    ${(mrrCents / 100).toFixed(2)}
                   </div>
-                  <span className="text-[11px] text-emerald-400 font-medium">
-                    +{metrics.activeSubscribers} VIP Members Active
+                  <span className="text-[11px] text-emerald-400 font-mono font-medium">
+                    +{activeSubs.length} VIP Members Active
                   </span>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
-                  <div className="flex items-center justify-between text-xs text-text-muted">
-                    <span>Gross Sales Volume</span>
-                    <TrendingUp className="w-4 h-4 text-emerald-400" />
+                  <div className="flex items-center justify-between text-xs text-text-muted font-mono">
+                    <span>GROSS SALES</span>
+                    <span className="text-emerald-400 font-bold">[ VOLUME ]</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
-                    ${(metrics.totalRevenueCents / 100).toFixed(2)}
+                    ${(totalRevenueCents / 100).toFixed(2)}
                   </div>
-                  <span className="text-[11px] text-text-muted">
-                    Across {metrics.paidOrdersCount} completed transactions
+                  <span className="text-[11px] text-text-muted font-mono">
+                    Across {paidOrders.length} completed transactions
                   </span>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
-                  <div className="flex items-center justify-between text-xs text-text-muted">
-                    <span>Active Subscribers</span>
-                    <Users className="w-4 h-4 text-gold" />
+                  <div className="flex items-center justify-between text-xs text-text-muted font-mono">
+                    <span>SUBSCRIBERS</span>
+                    <span className="text-gold font-bold">[ VIP ]</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
-                    {metrics.activeSubscribers}
+                    {activeSubs.length}
                   </div>
-                  <span className="text-[11px] text-text-muted">
-                    Churn rate: {metrics.churnRatePercent}% (healthy)
+                  <span className="text-[11px] text-text-muted font-mono">
+                    Churn rate: 4.2% (healthy)
                   </span>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
-                  <div className="flex items-center justify-between text-xs text-text-muted">
-                    <span>Vault Total Plays</span>
-                    <Film className="w-4 h-4 text-text-secondary" />
+                  <div className="flex items-center justify-between text-xs text-text-muted font-mono">
+                    <span>TOTAL PLAYS</span>
+                    <span className="text-text-secondary font-bold">[ ARCHIVE ]</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
-                    {metrics.totalViews.toLocaleString()}
+                    {totalViews.toLocaleString()}
                   </div>
-                  <span className="text-[11px] text-text-muted">
-                    Across {metrics.totalVideos} published drops
+                  <span className="text-[11px] text-text-muted font-mono">
+                    Across {videos.length} published drops
                   </span>
                 </div>
               </div>
@@ -270,9 +296,9 @@ export default function AdminPage() {
                     <h3 className="font-display font-bold text-base text-text-primary uppercase tracking-tight">
                       7-Day Revenue Trend
                     </h3>
-                    <p className="text-xs text-text-muted">Sales spiked following the Telegram teaser release</p>
+                    <p className="text-xs text-text-muted font-mono">Sales spiked following the Telegram teaser release</p>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full">
+                  <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full">
                     +42% vs last week
                   </span>
                 </div>
@@ -288,7 +314,7 @@ export default function AdminPage() {
                     { day: 'Today', val: 100, amount: '$1,120' },
                   ].map((bar, i) => (
                     <div key={i} className="flex flex-col items-center gap-2 h-full justify-end group">
-                      <span className="text-[10px] text-text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[10px] font-mono text-text-muted opacity-0 group-hover:opacity-100 transition-opacity">
                         {bar.amount}
                       </span>
                       <div
@@ -299,7 +325,7 @@ export default function AdminPage() {
                             : 'bg-surface-3 group-hover:bg-gold/60'
                         }`}
                       />
-                      <span className="text-[10px] uppercase font-bold text-text-muted">
+                      <span className="text-[10px] uppercase font-mono font-bold text-text-muted">
                         {bar.day}
                       </span>
                     </div>
@@ -311,15 +337,15 @@ export default function AdminPage() {
               <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-display font-bold text-base text-text-primary uppercase tracking-tight">
-                    Recent Customer Purchases
+                    Recent Customer Purchases ({orders.length})
                   </h3>
-                  <button onClick={() => setCurrentTab('orders')} className="text-xs text-gold hover:underline">
-                    View All Orders &rarr;
+                  <button onClick={() => setCurrentTab('orders')} className="text-xs font-mono text-gold hover:underline">
+                    VIEW ALL ORDERS &rarr;
                   </button>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                  <table className="w-full text-left text-xs font-mono">
                     <thead className="text-[10px] uppercase text-text-muted border-b border-border">
                       <tr>
                         <th className="pb-3">Buyer Email</th>
@@ -330,7 +356,7 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/60">
-                      {orders.slice(0, 4).map((o) => (
+                      {orders.slice(0, 5).map((o) => (
                         <tr key={o.id} className="hover:bg-surface-2/40">
                           <td className="py-3 font-medium text-text-primary">{o.email}</td>
                           <td className="py-3 text-text-secondary">{o.videoTitle || 'VIP Subscription'}</td>
@@ -360,19 +386,18 @@ export default function AdminPage() {
                   <h3 className="font-display font-bold text-xl text-text-primary uppercase">
                     Video Drops Catalog ({videos.length})
                   </h3>
-                  <p className="text-xs text-text-muted">Manage pricing, subscription tiers, and media streaming endpoints.</p>
+                  <p className="text-xs text-text-muted font-mono">Manage pricing, subscription tiers, and media streaming endpoints.</p>
                 </div>
                 <button
                   onClick={() => setNewVideoModal(true)}
-                  className="px-4 py-2 bg-gold hover:bg-gold-light text-black text-xs font-bold rounded-xl flex items-center gap-2"
+                  className="px-4 py-2 bg-gold hover:bg-gold-light text-black text-xs font-mono font-bold uppercase rounded-xl"
                 >
-                  <Plus className="w-4 h-4" />
-                  Add Video Drop
+                  + ADD VIDEO DROP
                 </button>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left text-xs font-mono">
                   <thead className="bg-surface-2 text-[10px] uppercase text-text-muted border-b border-border">
                     <tr>
                       <th className="p-3.5">Title</th>
@@ -409,10 +434,9 @@ export default function AdminPage() {
                         <td className="p-3.5 text-right">
                           <button
                             onClick={() => handleDeleteVideo(vid.id)}
-                            className="p-1.5 text-text-muted hover:text-crimson transition-colors"
-                            title="Soft delete"
+                            className="px-2 py-1 text-text-muted hover:text-crimson border border-border hover:border-crimson/50 rounded transition-colors text-[10px]"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            [ DELETE ]
                           </button>
                         </td>
                       </tr>
@@ -431,23 +455,22 @@ export default function AdminPage() {
                   <h3 className="font-display font-bold text-xl text-text-primary uppercase">
                     Customer Transactions ({orders.length})
                   </h3>
-                  <p className="text-xs text-text-muted">Includes hashed IP defense logs and instant refund handling.</p>
+                  <p className="text-xs text-text-muted font-mono">Live synced across browser tabs. Instant fulfillment & refund handling.</p>
                 </div>
 
                 <div className="relative w-full sm:w-64">
-                  <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={orderSearch}
                     onChange={(e) => setOrderSearch(e.target.value)}
-                    placeholder="Search by order ID or email..."
-                    className="w-full pl-9 pr-3 py-1.5 bg-surface-2 border border-border focus:border-gold rounded-xl text-xs text-text-primary outline-none"
+                    placeholder="SEARCH ORDER ID / EMAIL..."
+                    className="w-full px-3 py-1.5 bg-surface-2 border border-border focus:border-gold rounded-xl text-xs font-mono text-text-primary outline-none"
                   />
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left text-xs font-mono">
                   <thead className="bg-surface-2 text-[10px] uppercase text-text-muted border-b border-border">
                     <tr>
                       <th className="p-3.5">Order ID</th>
@@ -500,7 +523,7 @@ export default function AdminPage() {
                               onClick={() => handleRefund(ord.id)}
                               className="px-2.5 py-1 bg-surface-2 hover:bg-rose-950/40 text-text-secondary hover:text-rose-400 border border-border text-[11px] font-semibold rounded-lg transition-colors"
                             >
-                              Issue Refund
+                              Refund
                             </button>
                           )}
                         </td>
@@ -520,12 +543,12 @@ export default function AdminPage() {
                   <h3 className="font-display font-bold text-xl text-text-primary uppercase">
                     VIP Club Members ({subscriptions.length})
                   </h3>
-                  <p className="text-xs text-text-muted">Automatic renewals, grace window monitor, and cancellation controls.</p>
+                  <p className="text-xs text-text-muted font-mono">Automatic renewals, grace window monitor, and cancellation controls.</p>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left text-xs font-mono">
                   <thead className="bg-surface-2 text-[10px] uppercase text-text-muted border-b border-border">
                     <tr>
                       <th className="p-3.5">Member Email</th>
@@ -572,10 +595,10 @@ export default function AdminPage() {
 
           {/* TAB 5: COMPLIANCE */}
           {currentTab === 'compliance' && (
-            <div className="space-y-6">
+            <div className="space-y-6 font-mono">
               <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-4">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-gold" />
+                  <span className="text-gold font-bold text-sm">[ 2257 RECORD CUSTODIAN ]</span>
                   <h3 className="font-display font-bold text-xl text-text-primary uppercase">
                     18 U.S.C. § 2257 Performer Records
                   </h3>
@@ -655,7 +678,7 @@ export default function AdminPage() {
 
           {/* TAB 6: SETTINGS */}
           {currentTab === 'settings' && (
-            <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-8">
+            <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-8 font-mono">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-5">
                 <div>
                   <h3 className="font-display font-bold text-xl text-text-primary uppercase">
@@ -667,8 +690,7 @@ export default function AdminPage() {
                 </div>
                 {configSaved && (
                   <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold animate-pulse">
-                    <Check className="w-4 h-4" />
-                    Settings Saved Successfully
+                    [ SETTINGS SAVED ]
                   </div>
                 )}
               </div>
@@ -677,19 +699,14 @@ export default function AdminPage() {
                 {/* 1. APPLE PAY */}
                 <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-black border border-white/20 text-white flex items-center justify-center font-bold text-lg">
-                        
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
-                          Apple Pay Merchant Gateway
-                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                            Active
-                          </span>
-                        </h4>
-                        <p className="text-xs text-text-muted">Enables one-touch FaceID / TouchID purchases for Safari, iOS, and macOS customers.</p>
-                      </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-text-primary uppercase flex items-center gap-2">
+                        APPLE PAY MERCHANT GATEWAY
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                          ACTIVE
+                        </span>
+                      </h4>
+                      <p className="text-xs text-text-muted">Enables one-touch FaceID / TouchID purchases for Safari, iOS, and macOS customers.</p>
                     </div>
                   </div>
 
@@ -718,34 +735,27 @@ export default function AdminPage() {
                 {/* 2. CASH APP */}
                 <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#00D632]/15 text-[#00D632] flex items-center justify-center font-bold text-lg">
-                        $
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
-                          Cash App P2P Direct
-                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#00D632]/15 text-[#00D632] border border-[#00D632]/30">
-                            Instant Verification
-                          </span>
-                        </h4>
-                        <p className="text-xs text-text-muted">Buyers send directly to your Cashtag with their Order ID in the note for automatic fulfillment.</p>
-                      </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-text-primary uppercase flex items-center gap-2">
+                        CASH APP P2P DIRECT
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#00D632]/15 text-[#00D632] border border-[#00D632]/30">
+                          INSTANT VERIFICATION
+                        </span>
+                      </h4>
+                      <p className="text-xs text-text-muted">Buyers send directly to your Cashtag with their Order ID in the note for automatic fulfillment.</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
                     <div>
                       <label className="block text-text-secondary font-semibold mb-1">Creator Cashtag ($)</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={paymentConfig.cashAppCashtag}
-                          onChange={(e) => setPaymentConfig({ ...paymentConfig, cashAppCashtag: e.target.value })}
-                          placeholder="$DBGOD1"
-                          className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-[#00D632] rounded-xl text-text-primary font-mono font-bold outline-none"
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        value={paymentConfig.cashAppCashtag}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, cashAppCashtag: e.target.value })}
+                        placeholder="$DBGOD1"
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-[#00D632] rounded-xl text-text-primary font-mono font-bold outline-none"
+                      />
                       <span className="text-[11px] text-text-muted mt-1 block">Live link: https://cash.app/{paymentConfig.cashAppCashtag}</span>
                     </div>
 
@@ -764,19 +774,14 @@ export default function AdminPage() {
                 {/* 3. WIRE TRANSFER / DIRECT ACH */}
                 <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center">
-                        <Building className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
-                          Bank Wire & High-Volume ACH Transfer
-                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">
-                            Discreet / High Value
-                          </span>
-                        </h4>
-                        <p className="text-xs text-text-muted">For high-tier collectors and custom drops. Buyer receives these exact wire instructions.</p>
-                      </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-text-primary uppercase flex items-center gap-2">
+                        BANK WIRE & HIGH-VOLUME ACH TRANSFER
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                          DISCREET / HIGH VALUE
+                        </span>
+                      </h4>
+                      <p className="text-xs text-text-muted">For high-tier collectors and custom drops. Buyer receives these exact wire instructions.</p>
                     </div>
                   </div>
 
@@ -846,14 +851,11 @@ export default function AdminPage() {
                 {/* 4. TELEGRAM NOTIFICATIONS */}
                 <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#229ED9]/15 text-[#229ED9] flex items-center justify-center">
-                        <Send className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-text-primary">Telegram Creator Dispatch (@DBGOD1)</h4>
-                        <p className="text-xs text-text-muted">Receive instant push notifications in your personal Telegram on every sale or renewal.</p>
-                      </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-text-primary uppercase">
+                        TELEGRAM CREATOR DISPATCH (@DBGOD1)
+                      </h4>
+                      <p className="text-xs text-text-muted">Receive instant push notifications in your personal Telegram on every sale or renewal.</p>
                     </div>
                     <input
                       type="checkbox"
@@ -891,7 +893,7 @@ export default function AdminPage() {
                 {/* 5. PROCESSOR ADAPTER DESCRIPTOR */}
                 <div className="space-y-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-                    Card & Crypto Processor Descriptors
+                    CARD & CRYPTO PROCESSOR DESCRIPTORS
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div>
@@ -918,10 +920,9 @@ export default function AdminPage() {
                 <div className="pt-2 flex justify-end">
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-gold hover:bg-gold-light text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-gold/20 flex items-center gap-2"
+                    className="px-6 py-3 bg-gold hover:bg-gold-light text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-gold/20 font-mono"
                   >
-                    <Save className="w-4 h-4" />
-                    Save Payment Settings
+                    SAVE PAYMENT SETTINGS &rarr;
                   </button>
                 </div>
               </form>
@@ -933,16 +934,16 @@ export default function AdminPage() {
       {/* Modal: Publish New Video Drop */}
       {newVideoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="w-full max-w-2xl bg-surface-1 border border-border rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-2xl bg-surface-1 border border-border rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto font-mono">
             <div className="flex items-center justify-between border-b border-border/80 pb-4">
               <h3 className="font-display font-bold text-lg text-text-primary uppercase">
                 Publish New Video Drop
               </h3>
               <button
                 onClick={() => setNewVideoModal(false)}
-                className="text-text-muted hover:text-text-primary text-sm font-bold"
+                className="text-text-muted hover:text-text-primary text-xs font-bold font-mono"
               >
-                ✕
+                [ CLOSE ]
               </button>
             </div>
 
@@ -1077,7 +1078,7 @@ export default function AdminPage() {
                   type="submit"
                   className="px-6 py-2 bg-gold hover:bg-gold-light text-black font-bold rounded-xl shadow-md shadow-gold/20"
                 >
-                  Publish Drop
+                  Publish Drop &rarr;
                 </button>
               </div>
             </form>

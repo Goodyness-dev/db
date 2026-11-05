@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Sparkles, Send, User, Film, Crown, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,7 +37,7 @@ export default function Navbar() {
             <span className="font-display font-extrabold text-base tracking-widest text-text-primary group-hover:text-gold transition-colors">
               VAULT
             </span>
-            <span className="text-[10px] uppercase tracking-widest text-gold font-semibold -mt-1">
+            <span className="text-[10px] uppercase tracking-widest text-gold font-semibold -mt-1 font-mono">
               BY DB (@DBGOD1)
             </span>
           </div>
@@ -48,27 +47,25 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-7">
           <Link
             href="/catalog"
-            className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1.5"
+            className="text-xs uppercase tracking-wider font-semibold text-text-secondary hover:text-text-primary transition-colors"
           >
-            <Film className="w-4 h-4 text-text-muted" />
             Catalog
           </Link>
           <Link
             href="/pricing"
-            className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1.5"
+            className="text-xs uppercase tracking-wider font-semibold text-text-secondary hover:text-gold transition-colors"
           >
-            <Crown className="w-4 h-4 text-gold" />
             VIP Club
           </Link>
           <Link
             href="/about"
-            className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+            className="text-xs uppercase tracking-wider font-semibold text-text-secondary hover:text-text-primary transition-colors"
           >
             About DB
           </Link>
           <Link
             href="/admin"
-            className="text-xs font-semibold px-2.5 py-1 bg-surface-2 text-text-muted hover:text-gold border border-border rounded-md transition-colors"
+            className="text-[11px] uppercase tracking-wider font-mono px-2.5 py-1 bg-surface-2 text-text-muted hover:text-gold border border-border rounded-md transition-colors"
           >
             Admin
           </Link>
@@ -81,11 +78,10 @@ export default function Navbar() {
             href="https://t.me/DBGOD1"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 bg-surface-2 hover:bg-surface-3 border border-border hover:border-gold/30 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary transition-all flex items-center gap-2"
+            className="px-3 py-1.5 bg-surface-2 hover:bg-surface-3 border border-border hover:border-gold/30 rounded-lg text-xs font-mono font-medium text-text-secondary hover:text-text-primary transition-all flex items-center gap-2"
           >
-            <Send className="w-3.5 h-3.5 text-[#229ED9]" />
             <span>@DBGOD1</span>
-            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#229ED9]/15 text-[#229ED9] rounded-full">
+            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#229ED9]/15 text-[#229ED9] rounded">
               11.9K
             </span>
           </a>
@@ -93,18 +89,16 @@ export default function Navbar() {
           {/* Member Library */}
           <Link
             href="/library"
-            className="px-3.5 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-1.5 text-xs uppercase tracking-wider font-semibold text-text-secondary hover:text-text-primary transition-colors"
           >
-            <User className="w-4 h-4 text-text-muted" />
             Library
           </Link>
 
           {/* Subscribe VIP Button */}
           <Link
             href="/pricing"
-            className="px-4 py-2 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-semibold text-xs rounded-lg transition-all duration-300 shadow-md shadow-gold/20 hover:scale-105 flex items-center gap-1.5"
+            className="px-4 py-2 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-bold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-md shadow-gold/20 hover:scale-105"
           >
-            <Sparkles className="w-3.5 h-3.5" />
             Join VIP
           </Link>
         </div>
@@ -113,15 +107,15 @@ export default function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <Link
             href="/pricing"
-            className="px-3 py-1.5 bg-gold text-black font-bold text-xs rounded-lg"
+            className="px-3 py-1.5 bg-gold text-black font-bold text-xs uppercase rounded-lg"
           >
             VIP
           </Link>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-text-secondary hover:text-text-primary bg-surface-1 border border-border rounded-lg"
+            className="px-2.5 py-1.5 text-xs font-mono font-bold text-text-secondary hover:text-text-primary bg-surface-1 border border-border rounded-lg"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? '[ CLOSE ]' : '[ MENU ]'}
           </button>
         </div>
       </div>
@@ -132,35 +126,35 @@ export default function Navbar() {
           <Link
             href="/catalog"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-medium text-text-primary py-2 border-b border-border/50"
+            className="block text-sm font-semibold uppercase tracking-wider text-text-primary py-2 border-b border-border/50"
           >
             Browse Catalog
           </Link>
           <Link
             href="/pricing"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-medium text-gold py-2 border-b border-border/50"
+            className="block text-sm font-semibold uppercase tracking-wider text-gold py-2 border-b border-border/50"
           >
             VIP Club Membership ($29.99/mo)
           </Link>
           <Link
             href="/library"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-medium text-text-primary py-2 border-b border-border/50"
+            className="block text-sm font-semibold uppercase tracking-wider text-text-primary py-2 border-b border-border/50"
           >
             My Purchases & Library
           </Link>
           <Link
             href="/about"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-base font-medium text-text-secondary py-2 border-b border-border/50"
+            className="block text-sm font-semibold uppercase tracking-wider text-text-secondary py-2 border-b border-border/50"
           >
             About DB
           </Link>
           <Link
             href="/admin"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm text-text-muted py-2"
+            className="block text-xs font-mono text-text-muted py-2"
           >
             Admin Dashboard
           </Link>
@@ -169,10 +163,9 @@ export default function Navbar() {
               href="https://t.me/DBGOD1"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-2.5 bg-surface-2 border border-border rounded-xl text-sm font-medium text-text-primary flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-surface-2 border border-border rounded-xl text-xs font-mono font-semibold text-text-primary flex items-center justify-center gap-2"
             >
-              <Send className="w-4 h-4 text-[#229ED9]" />
-              Join DBGODPLAYHOUSE (@DBGOD1 • 11.9k+ Fans)
+              TG: @DBGOD1 (11.9K+ Viewers) &rarr;
             </a>
           </div>
         </div>
