@@ -10,28 +10,27 @@ export default function HomePage() {
 
   return (
     <div className="space-y-24 pb-16">
-      {/* Hero Section: Full bleed touching the navbar, balanced opacity, no circle */}
-      <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden border-b border-border/60 pt-20 sm:pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-        {/* Full-bleed Hero Image - Touching the navbar (inset-0), balanced opacity */}
+      {/* Hero Section: Full bleed touching the navbar, 100% opacity image, non-circle */}
+      <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center overflow-hidden border-b border-border/60 pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+        {/* Full-bleed Hero Image - 100% Full Opacity, Touching Navbar */}
         <div className="absolute inset-0 pointer-events-none">
           <img
             src="/media/db-hero-main.jpg"
             alt="DB - Creator Vault"
-            className="w-full h-full object-cover object-[center_25%] opacity-35 sm:opacity-45 transition-all duration-700"
+            className="w-full h-full object-cover object-[center_35%]"
           />
-          {/* Subtle cinematic gradient so text is crisp and readable */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/90" />
-          <div className="absolute inset-0 bg-black/30" />
+          {/* Subtle top/bottom edge transitions so content transitions cleanly */}
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent pointer-events-none" />
         </div>
 
         {/* Ambient Gold Glow orb */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 sm:w-[32rem] h-80 sm:h-[32rem] bg-gold/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 sm:w-[32rem] h-80 sm:h-[32rem] bg-gold/20 rounded-full blur-[140px] pointer-events-none" />
 
-        {/* Hero Content Overlay */}
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 font-mono">
-          {/* Verified Creator Badge - Clean pill, Not a circle */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/90 border border-gold/50 text-xs font-mono font-bold text-gold backdrop-blur-md shadow-xl">
+        {/* Hero Content Overlay inside Sleek Glass Card for 100% Readability */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 font-mono bg-black/70 backdrop-blur-lg p-6 sm:p-10 md:p-12 rounded-3xl border border-white/15 shadow-2xl">
+          {/* Verified Creator Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/95 border border-gold/60 text-xs font-mono font-bold text-gold backdrop-blur-md shadow-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>DB</span>
             <span className="text-text-muted">•</span>
@@ -42,13 +41,13 @@ export default function HomePage() {
 
           {/* Headline */}
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-white uppercase leading-tight font-sans drop-shadow-md">
+            <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-white uppercase leading-tight font-sans drop-shadow-lg">
               PRIVATE VAULT <br />
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 BY CREATOR DB
               </span>
             </h1>
-            <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-text-primary/90 font-normal leading-relaxed font-sans px-2 drop-shadow">
+            <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-text-primary/90 font-normal leading-relaxed font-sans px-2">
               Unfiltered, cinematic 4K productions and exclusive private archives. Instant unlocking in under 60 seconds with 100% discreet billing.
             </p>
           </div>
@@ -63,7 +62,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/pricing"
-              className="w-full sm:w-auto px-7 py-4 bg-surface-1/90 hover:bg-surface-2 text-white border border-border hover:border-gold/40 font-semibold text-xs uppercase tracking-wider rounded-xl transition-all text-center backdrop-blur-md"
+              className="w-full sm:w-auto px-7 py-4 bg-surface-2/90 hover:bg-surface-3 text-white border border-border hover:border-gold/50 font-semibold text-xs uppercase tracking-wider rounded-xl transition-all text-center"
             >
               JOIN VIP CLUB ($29.99/MO)
             </Link>
@@ -95,20 +94,20 @@ export default function HomePage() {
           </div>
 
           {/* Value Props Row */}
-          <div className="pt-8 sm:pt-10 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto border-t border-white/10 text-left font-mono">
-            <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+          <div className="pt-8 sm:pt-10 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto border-t border-white/15 text-left font-mono">
+            <div className="p-3 bg-surface-1/80 rounded-xl border border-white/10">
               <span className="block font-display font-black text-lg sm:text-xl text-white">4K UHD</span>
               <span className="text-[11px] sm:text-xs text-text-muted">Mastered 60FPS</span>
             </div>
-            <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+            <div className="p-3 bg-surface-1/80 rounded-xl border border-white/10">
               <span className="block font-display font-black text-lg sm:text-xl text-white">&lt; 60s</span>
               <span className="text-[11px] sm:text-xs text-text-muted">Instant Unlock</span>
             </div>
-            <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+            <div className="p-3 bg-surface-1/80 rounded-xl border border-white/10">
               <span className="block font-display font-black text-lg sm:text-xl text-white">100%</span>
               <span className="text-[11px] sm:text-xs text-text-muted">Discreet Statement</span>
             </div>
-            <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+            <div className="p-3 bg-surface-1/80 rounded-xl border border-white/10">
               <span className="block font-display font-black text-lg sm:text-xl text-white">APPLE & CASH</span>
               <span className="text-[11px] sm:text-xs text-text-muted">Plus Wire & USDT</span>
             </div>
