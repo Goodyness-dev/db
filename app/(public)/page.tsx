@@ -10,27 +10,30 @@ export default function HomePage() {
 
   return (
     <div className="space-y-24 pb-16">
-      {/* Hero Section: Full bleed touching the navbar, 100% opacity image, non-circle */}
-      <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center overflow-hidden border-b border-border/60 pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
-        {/* Full-bleed Hero Image - 100% Full Opacity, Touching Navbar */}
-        <div className="absolute inset-0 pointer-events-none">
-          <img
-            src="/media/db-hero-main.jpg"
-            alt="DB - Creator Vault"
-            className="w-full h-full object-cover object-[center_35%]"
+      {/* Hero Section: Full bleed touching the navbar, clear ambient video */}
+      <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden border-b border-border/60 pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+        {/* Full-bleed Ambient Video - Sharp & Clear (No Blur) */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-60 sm:opacity-70 scale-100"
+            src="/media/vault-drop-01.mp4"
           />
-          {/* Subtle top/bottom edge transitions so content transitions cleanly */}
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+          {/* Subtle cinematic gradient so text is readable without muddying the video */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-black/50" />
+          <div className="absolute inset-0 bg-black/20" />
         </div>
 
         {/* Ambient Gold Glow orb */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 sm:w-[32rem] h-80 sm:h-[32rem] bg-gold/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 sm:w-[32rem] h-80 sm:h-[32rem] bg-gold/15 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Hero Content Overlay inside Sleek Glass Card for 100% Readability */}
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 font-mono bg-black/70 backdrop-blur-lg p-6 sm:p-10 md:p-12 rounded-3xl border border-white/15 shadow-2xl">
+        {/* Hero Content Overlay */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 font-mono">
           {/* Verified Creator Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/95 border border-gold/60 text-xs font-mono font-bold text-gold backdrop-blur-md shadow-xl">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/90 border border-gold/50 text-xs font-mono font-bold text-gold backdrop-blur-md shadow-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>DB</span>
             <span className="text-text-muted">•</span>
@@ -41,13 +44,13 @@ export default function HomePage() {
 
           {/* Headline */}
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-white uppercase leading-tight font-sans drop-shadow-lg">
+            <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-white uppercase leading-tight font-sans drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
               PRIVATE VAULT <br />
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 BY CREATOR DB
               </span>
             </h1>
-            <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-text-primary/90 font-normal leading-relaxed font-sans px-2">
+            <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-text-primary font-normal leading-relaxed font-sans px-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
               Unfiltered, cinematic 4K productions and exclusive private archives. Instant unlocking in under 60 seconds with 100% discreet billing.
             </p>
           </div>
