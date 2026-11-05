@@ -10,122 +10,109 @@ export default function HomePage() {
 
   return (
     <div className="space-y-24 pb-16">
-      {/* Hero Section */}
-      <section className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden border-b border-border/60">
-        {/* Background Ambient Video / Backdrop - Positioned LOWER in the hero */}
-        <div className="absolute inset-x-0 bottom-0 top-1/2 sm:top-2/5 pointer-events-none overflow-hidden">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-25 filter blur-sm scale-105"
-            src="/media/vault-drop-01.mp4"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-background/60 to-background" />
-        </div>
-
-        {/* Ambient Gold Glow orb focused behind DB */}
-        <div className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 w-80 sm:w-[28rem] h-80 sm:h-[28rem] bg-gold/15 rounded-full blur-[100px] sm:blur-[130px] pointer-events-none" />
-
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8 py-16 sm:py-24 font-mono">
-          {/* Creator Focal Avatar in Hero */}
-          <div className="flex flex-col items-center justify-center space-y-3">
-            <div className="relative group cursor-pointer">
-              {/* Luxury Gold Halo Glow */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-gold via-amber-300 to-gold rounded-full blur-xl opacity-60 group-hover:opacity-100 transition duration-500 animate-pulse" />
-              <img
-                src="/media/db-owner-1.jpg"
-                alt="Creator DB"
-                className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full object-cover border-4 border-surface-1 ring-2 ring-gold shadow-2xl transition-transform duration-300 group-hover:scale-105"
-              />
-              {/* Live verified status badge */}
-              <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-surface-1/95 border border-emerald-500/50 shadow-lg flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[10px] font-mono font-bold text-emerald-400">ONLINE</span>
-              </div>
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-1/90 border border-gold/40 text-[11px] sm:text-xs font-mono font-bold text-gold backdrop-blur-md shadow-md">
-              <span>CREATOR DB</span>
-              <span className="text-text-muted">•</span>
-              <span className="text-white">OFFICIAL VAULT</span>
-            </div>
+      {/* Hero Section: Full screen with padding, non-circle image with high opacity */}
+      <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8 pt-20 sm:pt-24 border-b border-border/60">
+        <div className="relative w-full min-h-[82vh] sm:min-h-[88vh] flex items-center justify-center rounded-3xl sm:rounded-[2.5rem] overflow-hidden border border-border/80 shadow-2xl bg-black">
+          {/* Full Screen Hero Image - High Opacity, Not in a circle */}
+          <div className="absolute inset-0">
+            <img
+              src="/media/db-hero-main.jpg"
+              alt="DB - Creator Vault"
+              className="w-full h-full object-cover object-[center_30%] opacity-70 sm:opacity-75 transition-all duration-700"
+            />
+            {/* Cinematic Gradient Overlays for Contrast & Text Readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/90" />
+            <div className="absolute inset-0 bg-black/25" />
           </div>
 
-          {/* Headline */}
-          <div className="space-y-3 sm:space-y-4">
-            <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-text-primary uppercase leading-tight font-sans">
-              PRIVATE VAULT <br />
-              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                BY CREATOR DB
-              </span>
-            </h1>
-            <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-text-secondary font-normal leading-relaxed font-sans px-2">
-              Unfiltered, cinematic 4K productions and exclusive private archives. Instant unlocking in under 60 seconds with 100% discreet billing.
-            </p>
-          </div>
+          {/* Ambient Gold Glow orb */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 sm:w-[32rem] h-80 sm:h-[32rem] bg-gold/15 rounded-full blur-[120px] pointer-events-none" />
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 font-mono">
-            <Link
-              href="/catalog"
-              className="w-full sm:w-auto px-8 py-4 bg-gold hover:bg-gold-light text-black font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all duration-200 shadow-xl shadow-gold/25 hover:scale-105 text-center"
-            >
-              EXPLORE ALL DROPS &rarr;
-            </Link>
-            <Link
-              href="/pricing"
-              className="w-full sm:w-auto px-7 py-4 bg-surface-2 hover:bg-surface-3 text-text-primary border border-border hover:border-gold/40 font-semibold text-xs uppercase tracking-wider rounded-xl transition-all text-center"
-            >
-              JOIN VIP CLUB ($29.99/MO)
-            </Link>
-          </div>
-
-          {/* Social Links Row */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-            <a
-              href="https://t.me/DBGOD1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2/90 border border-border hover:border-[#229ED9] text-xs font-mono text-text-secondary hover:text-white transition-all shadow-md"
-            >
+          {/* Hero Content Overlay */}
+          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8 py-16 sm:py-24 font-mono">
+            {/* Verified Creator Badge - Clean pill, Not a circle */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/90 border border-gold/50 text-xs font-mono font-bold text-gold backdrop-blur-md shadow-xl">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-bold text-[#229ED9]">TELEGRAM</span>
+              <span>DB</span>
               <span className="text-text-muted">•</span>
-              <span>@DBGOD1 (11.9K+) &rarr;</span>
-            </a>
-            <a
-              href="https://x.com/DBGODPLAYHOUSE"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2/90 border border-border hover:border-gold/40 text-xs font-mono text-text-secondary hover:text-white transition-all shadow-md"
-            >
-              <span className="font-bold text-white">X</span>
+              <span className="text-white">OFFICIAL CREATOR VAULT</span>
               <span className="text-text-muted">•</span>
-              <span>@DBGODPLAYHOUSE &rarr;</span>
-            </a>
-          </div>
+              <span className="text-emerald-400">ONLINE</span>
+            </div>
 
-          {/* Value Props Row */}
-          <div className="pt-8 sm:pt-10 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto border-t border-border/40 text-left font-mono">
-            <div className="p-2.5 sm:p-3 bg-surface-1/40 sm:bg-transparent rounded-xl border border-border/30 sm:border-0">
-              <span className="block font-display font-black text-lg sm:text-xl text-text-primary">4K UHD</span>
-              <span className="text-[11px] sm:text-xs text-text-muted">Mastered 60FPS</span>
+            {/* Headline */}
+            <div className="space-y-3 sm:space-y-4">
+              <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-white uppercase leading-tight font-sans drop-shadow-md">
+                PRIVATE VAULT <br />
+                <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                  BY CREATOR DB
+                </span>
+              </h1>
+              <p className="max-w-2xl mx-auto text-sm sm:text-base lg:text-lg text-text-primary/90 font-normal leading-relaxed font-sans px-2 drop-shadow">
+                Unfiltered, cinematic 4K productions and exclusive private archives. Instant unlocking in under 60 seconds with 100% discreet billing.
+              </p>
             </div>
-            <div className="p-2.5 sm:p-3 bg-surface-1/40 sm:bg-transparent rounded-xl border border-border/30 sm:border-0">
-              <span className="block font-display font-black text-lg sm:text-xl text-text-primary">&lt; 60s</span>
-              <span className="text-[11px] sm:text-xs text-text-muted">Instant Unlock</span>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 font-mono">
+              <Link
+                href="/catalog"
+                className="w-full sm:w-auto px-8 py-4 bg-gold hover:bg-gold-light text-black font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all duration-200 shadow-xl shadow-gold/30 hover:scale-105 text-center"
+              >
+                EXPLORE ALL DROPS &rarr;
+              </Link>
+              <Link
+                href="/pricing"
+                className="w-full sm:w-auto px-7 py-4 bg-surface-1/90 hover:bg-surface-2 text-white border border-border hover:border-gold/40 font-semibold text-xs uppercase tracking-wider rounded-xl transition-all text-center backdrop-blur-md"
+              >
+                JOIN VIP CLUB ($29.99/MO)
+              </Link>
             </div>
-            <div className="p-2.5 sm:p-3 bg-surface-1/40 sm:bg-transparent rounded-xl border border-border/30 sm:border-0">
-              <span className="block font-display font-black text-lg sm:text-xl text-text-primary">100%</span>
-              <span className="text-[11px] sm:text-xs text-text-muted">Discreet Statement</span>
+
+            {/* Social Links Row */}
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <a
+                href="https://t.me/DBGOD1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-1/90 border border-border hover:border-[#229ED9] text-xs font-mono text-white transition-all shadow-md backdrop-blur-md"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="font-bold text-[#229ED9]">TELEGRAM</span>
+                <span className="text-text-muted">•</span>
+                <span>@DBGOD1 (11.9K+) &rarr;</span>
+              </a>
+              <a
+                href="https://x.com/DBGODPLAYHOUSE"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-1/90 border border-border hover:border-gold/40 text-xs font-mono text-white transition-all shadow-md backdrop-blur-md"
+              >
+                <span className="font-bold text-white">X</span>
+                <span className="text-text-muted">•</span>
+                <span>@DBGODPLAYHOUSE &rarr;</span>
+              </a>
             </div>
-            <div className="p-2.5 sm:p-3 bg-surface-1/40 sm:bg-transparent rounded-xl border border-border/30 sm:border-0">
-              <span className="block font-display font-black text-lg sm:text-xl text-text-primary">APPLE & CASH</span>
-              <span className="text-[11px] sm:text-xs text-text-muted">Plus Wire & USDT</span>
+
+            {/* Value Props Row */}
+            <div className="pt-8 sm:pt-10 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto border-t border-white/10 text-left font-mono">
+              <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+                <span className="block font-display font-black text-lg sm:text-xl text-white">4K UHD</span>
+                <span className="text-[11px] sm:text-xs text-text-muted">Mastered 60FPS</span>
+              </div>
+              <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+                <span className="block font-display font-black text-lg sm:text-xl text-white">&lt; 60s</span>
+                <span className="text-[11px] sm:text-xs text-text-muted">Instant Unlock</span>
+              </div>
+              <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+                <span className="block font-display font-black text-lg sm:text-xl text-white">100%</span>
+                <span className="text-[11px] sm:text-xs text-text-muted">Discreet Statement</span>
+              </div>
+              <div className="p-3 bg-surface-1/60 backdrop-blur-md rounded-xl border border-white/10">
+                <span className="block font-display font-black text-lg sm:text-xl text-white">APPLE & CASH</span>
+                <span className="text-[11px] sm:text-xs text-text-muted">Plus Wire & USDT</span>
+              </div>
             </div>
           </div>
         </div>
