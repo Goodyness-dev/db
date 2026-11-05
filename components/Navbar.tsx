@@ -28,20 +28,19 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand with DB's Photo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <img
-            src="/media/db-owner-1.jpg"
-            alt="Creator DB"
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-gold/40 group-hover:ring-gold transition-all shadow-md"
-          />
-          <div className="flex flex-col">
-            <span className="font-display font-extrabold text-base tracking-widest text-text-primary group-hover:text-gold transition-colors">
-              VAULT
-            </span>
-            <span className="text-[10px] uppercase tracking-widest text-gold font-semibold -mt-0.5 font-mono">
-              BY DB
-            </span>
+        {/* Brand Focus: DB's Image */}
+        <Link href="/" className="flex items-center group relative py-0.5" title="DB • Creator Vault">
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-gold via-amber-300 to-gold rounded-full blur-xs opacity-60 group-hover:opacity-100 transition duration-300" />
+            <img
+              src="/media/db-owner-1.jpg"
+              alt="DB"
+              className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-background ring-2 ring-gold/80 group-hover:ring-gold shadow-lg shadow-gold/25 transition-all duration-300 group-hover:scale-105"
+            />
+            <span
+              className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-background rounded-full shadow-sm"
+              title="DB Online & Verified"
+            />
           </div>
         </Link>
 
@@ -136,6 +135,22 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden glass-dropdown border-b border-border px-6 py-6 space-y-4 animate-in slide-in-from-top-4 duration-200">
+          {/* Creator Profile Row in Mobile Menu */}
+          <div className="flex items-center gap-3 pb-3 border-b border-border/60">
+            <div className="relative">
+              <img
+                src="/media/db-owner-1.jpg"
+                alt="DB"
+                className="w-11 h-11 rounded-full object-cover ring-2 ring-gold/70 shadow-md"
+              />
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-background rounded-full" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm text-text-primary uppercase tracking-wide">DB</span>
+              <span className="text-[10px] font-mono text-gold uppercase tracking-wider">OFFICIAL VAULT</span>
+            </div>
+          </div>
+
           <Link
             href="/catalog"
             onClick={() => setMobileMenuOpen(false)}

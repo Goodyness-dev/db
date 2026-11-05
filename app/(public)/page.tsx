@@ -11,9 +11,9 @@ export default function HomePage() {
   return (
     <div className="space-y-24 pb-16">
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden border-b border-border/60">
-        {/* Background Ambient Video / Backdrop with cinematic gradient */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <section className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden border-b border-border/60">
+        {/* Background Ambient Video / Backdrop - Positioned LOWER in the hero */}
+        <div className="absolute inset-x-0 bottom-0 top-1/2 sm:top-2/5 pointer-events-none overflow-hidden">
           <video
             autoPlay
             muted
@@ -22,14 +22,39 @@ export default function HomePage() {
             className="w-full h-full object-cover opacity-25 filter blur-sm scale-105"
             src="/media/vault-drop-01.mp4"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
           <div className="absolute inset-0 bg-radial-gradient from-transparent via-background/60 to-background" />
         </div>
 
-        {/* Ambient Gold Glow orb */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-gold/15 rounded-full blur-[100px] sm:blur-[120px] pointer-events-none" />
+        {/* Ambient Gold Glow orb focused behind DB */}
+        <div className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 w-80 sm:w-[28rem] h-80 sm:h-[28rem] bg-gold/15 rounded-full blur-[100px] sm:blur-[130px] pointer-events-none" />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8 py-14 sm:py-20 font-mono">
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8 py-16 sm:py-24 font-mono">
+          {/* Creator Focal Avatar in Hero */}
+          <div className="flex flex-col items-center justify-center space-y-3">
+            <div className="relative group cursor-pointer">
+              {/* Luxury Gold Halo Glow */}
+              <div className="absolute -inset-2 bg-gradient-to-r from-gold via-amber-300 to-gold rounded-full blur-xl opacity-60 group-hover:opacity-100 transition duration-500 animate-pulse" />
+              <img
+                src="/media/db-owner-1.jpg"
+                alt="Creator DB"
+                className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full object-cover border-4 border-surface-1 ring-2 ring-gold shadow-2xl transition-transform duration-300 group-hover:scale-105"
+              />
+              {/* Live verified status badge */}
+              <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-surface-1/95 border border-emerald-500/50 shadow-lg flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[10px] font-mono font-bold text-emerald-400">ONLINE</span>
+              </div>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-1/90 border border-gold/40 text-[11px] sm:text-xs font-mono font-bold text-gold backdrop-blur-md shadow-md">
+              <span>CREATOR DB</span>
+              <span className="text-text-muted">•</span>
+              <span className="text-white">OFFICIAL VAULT</span>
+            </div>
+          </div>
+
           {/* Headline */}
           <div className="space-y-3 sm:space-y-4">
             <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tight text-text-primary uppercase leading-tight font-sans">
