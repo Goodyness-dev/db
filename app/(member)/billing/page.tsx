@@ -64,7 +64,7 @@ export default function MemberBillingPage() {
 
       {cancelStatus && (
         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono">
-          [ NOTICE ] {cancelStatus}
+          NOTICE: {cancelStatus}
         </div>
       )}
 
@@ -74,7 +74,7 @@ export default function MemberBillingPage() {
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <span className="text-[11px] uppercase tracking-wider font-bold text-gold font-mono">
-                [ ACTIVE VIP PLAN ]
+                ACTIVE VIP PLAN
               </span>
               <h3 className="font-display font-bold text-xl text-text-primary uppercase font-sans">
                 {userSub ? userSub.planName : 'No Active VIP Subscription'}
@@ -136,7 +136,7 @@ export default function MemberBillingPage() {
         {/* Discreet Billing Information */}
         <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-4 font-mono">
           <div className="text-gold">
-            <h4 className="text-xs font-bold uppercase tracking-wider">[ DISCREET GUARANTEE ]</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider">DISCREET GUARANTEE</h4>
           </div>
           <p className="text-xs text-text-secondary leading-relaxed font-sans">
             All renewals and transactions appear on bank and card statements as a neutral digital service (&quot;VAULT DIGITAL SVCS&quot;).

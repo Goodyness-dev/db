@@ -78,7 +78,7 @@ export default function VideoCard({ video, isUnlocked = false }: VideoCardProps)
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none font-mono">
           {video.isSubscriptionOnly ? (
             <span className="px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase bg-surface-1/90 border border-gold/60 text-gold rounded-full shadow-md">
-              [ VIP ONLY ]
+              VIP ONLY
             </span>
           ) : (
             <span className="px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase bg-surface-1/90 border border-border text-text-primary rounded-full">

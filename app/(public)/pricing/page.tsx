@@ -45,23 +45,23 @@ export default function PricingPage() {
       {/* Title */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
         <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-bold uppercase tracking-wider font-mono">
-          [ MEMBERSHIP TIERS ]
+          MEMBERSHIP TIERS
         </div>
         <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-text-primary uppercase tracking-tight font-sans">
           Choose How You Experience DB
         </h1>
-        <p className="text-xs sm:text-sm text-text-secondary leading-relaxed font-sans">
+        <p className="text-xs sm:text-sm text-text-secondary leading-relaxed font-sans px-2">
           Pay as you go per individual drop, or join the VIP Club for unlimited all-access streaming to everything DB publishes without being on file with OnlyFans.
         </p>
       </div>
 
       {/* Comparison Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch font-mono">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto items-stretch font-mono">
         {/* Tier 1: Pay Per Video */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-surface-1 border border-border flex flex-col justify-between space-y-8">
+        <div className="p-6 sm:p-10 rounded-2xl sm:rounded-3xl bg-surface-1 border border-border flex flex-col justify-between space-y-8">
           <div className="space-y-6">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-text-muted">[ A LA CARTE ]</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-text-muted font-mono">A LA CARTE</span>
               <h3 className="font-display font-bold text-2xl text-text-primary mt-1 uppercase font-sans">
                 Pay-Per-Video Drops
               </h3>
@@ -79,23 +79,23 @@ export default function PricingPage() {
             {/* Checklist */}
             <ul className="space-y-3 text-xs text-text-secondary font-sans">
               <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono font-bold">[+]</span>
+                <span className="text-emerald-400 font-mono font-bold">+</span>
                 <span>Permanent lifetime access to purchased item</span>
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono font-bold">[+]</span>
+                <span className="text-emerald-400 font-mono font-bold">+</span>
                 <span>Full 4K Ultra-HD streaming quality</span>
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono font-bold">[+]</span>
+                <span className="text-emerald-400 font-mono font-bold">+</span>
                 <span>Apple Pay, Cash App, Wire, Card & Crypto accepted</span>
               </li>
               <li className="flex items-center gap-2 text-text-muted">
-                <span className="font-mono font-bold">[-]</span>
+                <span className="font-mono font-bold">—</span>
                 <span>No access to VIP-only uncut archives</span>
               </li>
               <li className="flex items-center gap-2 text-text-muted">
-                <span className="font-mono font-bold">[-]</span>
+                <span className="font-mono font-bold">—</span>
                 <span>No Telegram VIP private community invite</span>
               </li>
             </ul>
@@ -110,7 +110,7 @@ export default function PricingPage() {
         </div>
 
         {/* Tier 2: VIP All-Access Membership (Highlighted) */}
-        <div className="relative p-8 sm:p-10 rounded-3xl bg-surface-1 border-2 border-gold flex flex-col justify-between space-y-8 shadow-2xl shadow-gold/15 overflow-hidden">
+        <div className="relative p-6 sm:p-10 rounded-2xl sm:rounded-3xl bg-surface-1 border-2 border-gold flex flex-col justify-between space-y-8 shadow-2xl shadow-gold/15 overflow-hidden">
           <div className="absolute top-0 right-0 bg-gold text-black font-extrabold text-[10px] uppercase tracking-wider px-4 py-1 rounded-bl-xl shadow-md font-mono">
             MOST POPULAR • 80% SAVINGS
           </div>
@@ -118,7 +118,7 @@ export default function PricingPage() {
           <div className="space-y-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-gold font-mono">
-                [ VIP CLUB ]
+                VIP CLUB
               </span>
               <h3 className="font-display font-bold text-2xl text-text-primary mt-1 uppercase font-sans">
                 All-Inclusive Vault Pass
@@ -128,7 +128,7 @@ export default function PricingPage() {
               </p>
             </div>
 
-            <div className="space-y-1 border-y border-gold/30 py-4 bg-gold/5 -mx-8 sm:-mx-10 px-8 sm:px-10">
+            <div className="space-y-1 border-y border-gold/30 py-4 bg-gold/5 -mx-6 sm:-mx-10 px-6 sm:px-10">
               <span className="text-xs text-gold font-semibold uppercase font-mono">Monthly Membership</span>
               <div className="flex items-baseline gap-2">
                 <span className="font-display font-black text-4xl text-text-primary">$29.99</span>
@@ -139,23 +139,23 @@ export default function PricingPage() {
 
             <ul className="space-y-3 text-xs text-text-secondary font-sans">
               <li className="flex items-center gap-2 font-medium text-text-primary">
-                <span className="text-gold font-mono font-bold">[VIP]</span>
+                <span className="text-gold font-mono font-bold">VIP</span>
                 <span>All current & future 4K video releases included</span>
               </li>
               <li className="flex items-center gap-2 font-medium text-text-primary">
-                <span className="text-gold font-mono font-bold">[VIP]</span>
+                <span className="text-gold font-mono font-bold">VIP</span>
                 <span>Full access to exclusive VIP Vault Uncut Archives</span>
               </li>
               <li className="flex items-center gap-2 font-medium text-text-primary">
-                <span className="text-gold font-mono font-bold">[VIP]</span>
+                <span className="text-gold font-mono font-bold">VIP</span>
                 <span>Private VIP Telegram group invite link (@DBGOD1)</span>
               </li>
               <li className="flex items-center gap-2 font-medium text-text-primary">
-                <span className="text-gold font-mono font-bold">[VIP]</span>
+                <span className="text-gold font-mono font-bold">VIP</span>
                 <span>Weekly subscriber polls deciding upcoming shoots</span>
               </li>
               <li className="flex items-center gap-2 font-medium text-text-primary">
-                <span className="text-gold font-mono font-bold">[VIP]</span>
+                <span className="text-gold font-mono font-bold">VIP</span>
                 <span>100% discreet billing: &quot;VAULT DIGITAL&quot;</span>
               </li>
             </ul>
@@ -264,7 +264,7 @@ export default function PricingPage() {
       {/* Discretion & Telegram assurance */}
       <div className="max-w-3xl mx-auto p-6 rounded-2xl bg-surface-1 border border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-secondary font-mono">
         <div>
-          <span className="font-bold text-text-primary block uppercase">[ ZERO COMMITMENT ]</span>
+          <span className="font-bold text-text-primary block uppercase">ZERO COMMITMENT</span>
           <span className="font-sans">You may cancel at any point from your Member Billing page in one single click.</span>
         </div>
         <a

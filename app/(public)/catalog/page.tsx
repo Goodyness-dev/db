@@ -53,7 +53,7 @@ export default function CatalogPage() {
       {/* Catalog Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center px-3 py-1 rounded-full bg-surface-2 border border-border text-xs text-text-secondary font-mono">
-          <span className="text-gold font-bold mr-1.5">[ CATALOG ]</span>
+          <span className="text-gold font-bold mr-1.5">CATALOG</span>
           <span>Full Creator Vault</span>
         </div>
         <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-text-primary uppercase tracking-tight font-sans">
@@ -123,7 +123,7 @@ export default function CatalogPage() {
       {/* Videos Grid */}
       {filteredVideos.length === 0 ? (
         <div className="py-20 text-center space-y-3 bg-surface-1 border border-border rounded-2xl font-mono">
-          <p className="text-base font-semibold text-text-primary uppercase">[ NO DROPS FOUND ]</p>
+          <p className="text-base font-semibold text-text-primary uppercase">NO DROPS FOUND</p>
           <p className="text-xs text-text-muted">Try clearing your search query or choosing another category.</p>
           <button
             onClick={() => {

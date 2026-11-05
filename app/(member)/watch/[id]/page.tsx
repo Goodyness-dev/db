@@ -83,7 +83,7 @@ function WatchContent() {
         </Link>
         {video && (
           <span className="text-xs font-bold uppercase tracking-wider text-gold font-mono">
-            [ {video.categoryName} ]
+            {video.categoryName}
           </span>
         )}
       </div>
@@ -97,7 +97,7 @@ function WatchContent() {
       ) : error ? (
         <div className="max-w-2xl mx-auto p-8 rounded-3xl bg-surface-1 border border-border text-center space-y-6 shadow-2xl font-mono">
           <div className="inline-block px-4 py-1.5 rounded-full bg-crimson/15 text-crimson font-bold text-xs uppercase border border-crimson/30">
-            [ ACCESS RESTRICTED ]
+            ACCESS RESTRICTED
           </div>
 
           <div className="space-y-2">

@@ -87,7 +87,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
     return (
       <div className="bg-surface-1 border border-gold/40 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
         <div className="text-gold">
-          <span className="text-xs uppercase font-mono font-bold tracking-widest">[ VIP CLUB EXCLUSIVE ]</span>
+          <span className="text-xs uppercase font-mono font-bold tracking-widest">VIP CLUB EXCLUSIVE</span>
         </div>
 
         <div>
@@ -111,7 +111,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
 
         <Link
           href="/pricing"
-          className="w-full py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center shadow-lg shadow-gold/25 hover:scale-[1.02] transition-all"
+          className="w-full py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center shadow-lg shadow-gold/25 hover:scale-[1.02] transition-all text-center"
         >
           Join VIP Club — Unlock Instantly &rarr;
         </Link>
@@ -122,7 +122,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
   const finalCents = calculateTotal();
 
   return (
-    <div className="bg-surface-1 border border-border hover:border-gold/30 transition-colors rounded-2xl p-6 sm:p-7 space-y-6 shadow-2xl">
+    <div className="bg-surface-1 border border-border hover:border-gold/30 transition-colors rounded-2xl p-5 sm:p-7 space-y-6 shadow-2xl">
       {/* Price Header */}
       <div className="flex items-baseline justify-between border-b border-border/80 pb-4">
         <div>
@@ -150,7 +150,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
             <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
               Your Email (Private Access Link)
             </label>
-            <span className="text-[10px] font-mono text-gold">[ DISCREET BILLING ]</span>
+            <span className="text-[10px] font-mono text-gold">DISCREET BILLING</span>
           </div>
           <input
             type="email"
@@ -274,7 +274,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
           </div>
           {appliedPromo && (
             <p className="mt-1.5 text-xs text-emerald-400 font-mono">
-              [APPLIED] Code {appliedPromo.code} ({appliedPromo.percentOff}% off)!
+              APPLIED: Code {appliedPromo.code} ({appliedPromo.percentOff}% off)!
             </p>
           )}
           {promoError && <p className="mt-1.5 text-xs text-rose-400 font-mono">{promoError}</p>}

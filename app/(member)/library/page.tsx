@@ -41,7 +41,7 @@ function LibraryContent() {
         <div className="p-4 rounded-2xl bg-gold/10 border border-gold/40 text-gold flex items-center justify-between animate-in fade-in">
           <div>
             <p className="text-xs sm:text-sm font-semibold">
-              [ VIP CLUB CONFIRMED ] All vault drops and future weekly releases are unlocked.
+              VIP CLUB CONFIRMED • All vault drops and future weekly releases are unlocked.
             </p>
           </div>
           <Link
@@ -56,7 +56,7 @@ function LibraryContent() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-border/80 pb-8">
         <div className="space-y-2">
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-surface-2 border border-border text-xs text-text-secondary">
-            <span className="text-gold font-bold mr-1.5">[ MEMBER PORTAL ]</span>
+            <span className="text-gold font-bold mr-1.5">MEMBER PORTAL •</span>
             <span>Private Archive</span>
           </div>
           <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-text-primary uppercase tracking-tight font-sans">
@@ -92,7 +92,7 @@ function LibraryContent() {
             <span>Demo: <button onClick={() => setEmail('vip@dbvault.com')} className="text-gold hover:underline">vip@dbvault.com</button></span>
             {isVip && (
               <span className="text-gold font-bold">
-                [ VIP ACTIVE ]
+                VIP ACTIVE
               </span>
             )}
           </div>

@@ -12,7 +12,7 @@ export default function RefundsPage() {
 
       <div className="p-8 rounded-3xl bg-surface-1 border border-border space-y-6 text-xs sm:text-sm text-text-secondary leading-relaxed font-sans">
         <div className="p-4 rounded-xl bg-surface-2 border border-border font-mono text-xs">
-          <span className="font-bold text-gold uppercase">[ SUPPORT ADVICE ]</span>
+          <span className="font-bold text-gold uppercase">SUPPORT ADVICE •</span>
           <p className="mt-1 text-text-secondary">
             If you experience technical issues, double charges, or unrecognized billing, contact our direct team at <strong className="text-gold">billing@vaultbydb.com</strong>. We resolve questions within 12 hours.
           </p>

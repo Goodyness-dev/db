@@ -55,7 +55,7 @@ export default function AdminSidebar({ currentTab, onTabChange }: AdminSidebarPr
                 </span>
                 <span>{item.label}</span>
               </div>
-              {isActive && <span className="font-mono text-[10px] font-bold">[ACTIVE]</span>}
+              {isActive && <span className="font-mono text-[10px] font-bold">ACTIVE</span>}
             </button>
           );
         })}

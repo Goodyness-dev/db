@@ -13,7 +13,7 @@ function CheckoutSimulateContent() {
   const isSubscription = searchParams.get('isSubscription') === 'true';
   const initialMethod = (searchParams.get('method') as PaymentMethod) || 'apple_pay';
   const emailParam = searchParams.get('email') || 'collector.vip@gmail.com';
-  const itemTitleParam = searchParams.get('itemTitle') || (isSubscription ? 'VIP Club Membership' : 'DROP 02: PENTHOUSE AFTERHOURS [RAW]');
+  const itemTitleParam = searchParams.get('itemTitle') || (isSubscription ? 'VIP Club Membership' : 'DROP 02: PENTHOUSE AFTERHOURS (RAW CUT)');
 
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'declined'>('idle');
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(initialMethod);
@@ -104,14 +104,14 @@ function CheckoutSimulateContent() {
             </div>
           </div>
           <span className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-gold/10 border border-gold/40 text-gold rounded-full font-mono">
-            [ ACTIVE GATEWAY ]
+            ACTIVE GATEWAY
           </span>
         </div>
 
         {paymentStatus === 'success' ? (
           <div className="text-center py-8 space-y-4 animate-in fade-in">
             <div className="inline-block px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-bold text-xs uppercase tracking-widest border border-emerald-500/40">
-              [ PAYMENT CONFIRMED & VERIFIED ]
+              PAYMENT CONFIRMED & VERIFIED
             </div>
             <h3 className="font-display font-bold text-xl text-text-primary uppercase">
               Access Granted Instantly
@@ -126,7 +126,7 @@ function CheckoutSimulateContent() {
         ) : paymentStatus === 'declined' ? (
           <div className="text-center py-6 space-y-4 animate-in fade-in">
             <div className="inline-block px-4 py-1.5 rounded-full bg-crimson/20 text-crimson font-mono font-bold text-xs uppercase border border-crimson/40">
-              [ PAYMENT DECLINED ]
+              PAYMENT DECLINED
             </div>
             <h3 className="font-display font-bold text-lg text-text-primary uppercase">
               Transaction Not Completed
@@ -234,7 +234,7 @@ function CheckoutSimulateContent() {
                   <span className="font-bold text-sm text-white uppercase tracking-wider font-mono">
                     Apple Pay Mobile Wallet
                   </span>
-                  <span className="text-xs font-mono text-neutral-400">[ DEVICE LINKED ]</span>
+                  <span className="text-xs font-mono text-neutral-400">DEVICE LINKED</span>
                 </div>
 
                 <div className="space-y-2 text-xs text-neutral-300 font-mono">
@@ -289,9 +289,9 @@ function CheckoutSimulateContent() {
                       <button
                         type="button"
                         onClick={() => copyToClipboard('$DBGOD1', 'cashtag')}
-                        className="px-2 py-0.5 text-[10px] border border-border rounded hover:text-white text-text-muted transition-colors"
+                        className="px-2 py-0.5 text-[10px] border border-border rounded hover:text-white text-text-muted transition-colors uppercase font-mono font-bold"
                       >
-                        {copied === 'cashtag' ? '[COPIED]' : '[COPY]'}
+                        {copied === 'cashtag' ? 'COPIED' : 'COPY'}
                       </button>
                     </div>
                     <span className="text-[10px] text-text-muted block">
@@ -357,8 +357,8 @@ function CheckoutSimulateContent() {
                       <span className="text-text-muted">Routing / ABA:</span>
                       <div className="flex items-center gap-1.5">
                         <span className="text-text-primary font-bold">021000021</span>
-                        <button onClick={() => copyToClipboard('021000021', 'routing')} className="hover:text-gold text-text-muted text-[10px]">
-                          {copied === 'routing' ? '[COPIED]' : '[COPY]'}
+                        <button onClick={() => copyToClipboard('021000021', 'routing')} className="hover:text-gold text-text-muted text-[10px] uppercase font-bold">
+                          {copied === 'routing' ? 'COPIED' : 'COPY'}
                         </button>
                       </div>
                     </div>
@@ -366,8 +366,8 @@ function CheckoutSimulateContent() {
                       <span className="text-text-muted">Account Number:</span>
                       <div className="flex items-center gap-1.5">
                         <span className="text-text-primary font-bold">9482019482</span>
-                        <button onClick={() => copyToClipboard('9482019482', 'account')} className="hover:text-gold text-text-muted text-[10px]">
-                          {copied === 'account' ? '[COPIED]' : '[COPY]'}
+                        <button onClick={() => copyToClipboard('9482019482', 'account')} className="hover:text-gold text-text-muted text-[10px] uppercase font-bold">
+                          {copied === 'account' ? 'COPIED' : 'COPY'}
                         </button>
                       </div>
                     </div>
@@ -375,8 +375,8 @@ function CheckoutSimulateContent() {
                       <span className="text-text-muted">Transfer Memo:</span>
                       <div className="flex items-center gap-1.5">
                         <span className="text-gold font-bold">{wireReference}</span>
-                        <button onClick={() => copyToClipboard(wireReference, 'ref')} className="hover:text-gold text-text-muted text-[10px]">
-                          {copied === 'ref' ? '[COPIED]' : '[COPY]'}
+                        <button onClick={() => copyToClipboard(wireReference, 'ref')} className="hover:text-gold text-text-muted text-[10px] uppercase font-bold">
+                          {copied === 'ref' ? 'COPIED' : 'COPY'}
                         </button>
                       </div>
                     </div>
@@ -462,7 +462,7 @@ function CheckoutSimulateContent() {
             {/* SECTION 5: CRYPTO */}
             {selectedMethod === 'crypto' && (
               <div className="p-4 rounded-xl bg-surface-2 border border-border text-center space-y-3 font-mono">
-                <p className="text-xs font-bold text-gold uppercase">[ USDT TRC-20 PRIVATE WALLET ]</p>
+                <p className="text-xs font-bold text-gold uppercase">USDT TRC-20 PRIVATE WALLET</p>
                 <div className="p-2.5 rounded-lg bg-surface-1 text-[11px] text-text-primary break-all border border-border">
                   TXYZ98273648172648102381273981274
                 </div>

@@ -208,7 +208,7 @@ export default function AdminPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-6">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-mono font-bold uppercase tracking-wider mb-2">
-            [ ROOT ] Authenticated Admin • DB Master Control
+            ROOT • Authenticated Admin • DB Master Control
           </div>
           <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-text-primary tracking-tight uppercase">
             CREATOR CONTROL CENTER
@@ -239,7 +239,7 @@ export default function AdminPage() {
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
                   <div className="flex items-center justify-between text-xs text-text-muted font-mono">
                     <span>MRR</span>
-                    <span className="text-gold font-bold">[ MONTHLY ]</span>
+                    <span className="text-gold font-bold">MONTHLY</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
                     ${(mrrCents / 100).toFixed(2)}
@@ -252,7 +252,7 @@ export default function AdminPage() {
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
                   <div className="flex items-center justify-between text-xs text-text-muted font-mono">
                     <span>GROSS SALES</span>
-                    <span className="text-emerald-400 font-bold">[ VOLUME ]</span>
+                    <span className="text-emerald-400 font-bold">VOLUME</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
                     ${(totalRevenueCents / 100).toFixed(2)}
@@ -265,7 +265,7 @@ export default function AdminPage() {
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
                   <div className="flex items-center justify-between text-xs text-text-muted font-mono">
                     <span>SUBSCRIBERS</span>
-                    <span className="text-gold font-bold">[ VIP ]</span>
+                    <span className="text-gold font-bold">VIP</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
                     {activeSubs.length}
@@ -278,7 +278,7 @@ export default function AdminPage() {
                 <div className="p-5 rounded-2xl bg-surface-1 border border-border space-y-2">
                   <div className="flex items-center justify-between text-xs text-text-muted font-mono">
                     <span>TOTAL PLAYS</span>
-                    <span className="text-text-secondary font-bold">[ ARCHIVE ]</span>
+                    <span className="text-text-secondary font-bold">ARCHIVE</span>
                   </div>
                   <div className="font-display font-black text-2xl text-text-primary">
                     {totalViews.toLocaleString()}
@@ -436,7 +436,7 @@ export default function AdminPage() {
                             onClick={() => handleDeleteVideo(vid.id)}
                             className="px-2 py-1 text-text-muted hover:text-crimson border border-border hover:border-crimson/50 rounded transition-colors text-[10px]"
                           >
-                            [ DELETE ]
+                            DELETE
                           </button>
                         </td>
                       </tr>
@@ -598,7 +598,7 @@ export default function AdminPage() {
             <div className="space-y-6 font-mono">
               <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-gold font-bold text-sm">[ 2257 RECORD CUSTODIAN ]</span>
+                  <span className="text-gold font-bold text-sm">2257 RECORD CUSTODIAN •</span>
                   <h3 className="font-display font-bold text-xl text-text-primary uppercase">
                     18 U.S.C. § 2257 Performer Records
                   </h3>
@@ -690,7 +690,7 @@ export default function AdminPage() {
                 </div>
                 {configSaved && (
                   <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold animate-pulse">
-                    [ SETTINGS SAVED ]
+                    SETTINGS SAVED
                   </div>
                 )}
               </div>
@@ -943,7 +943,7 @@ export default function AdminPage() {
                 onClick={() => setNewVideoModal(false)}
                 className="text-text-muted hover:text-text-primary text-xs font-bold font-mono"
               >
-                [ CLOSE ]
+                CLOSE
               </button>
             </div>
 

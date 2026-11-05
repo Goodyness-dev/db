@@ -136,7 +136,7 @@ export default function Player({
       {/* Security Token Verified Tag */}
       <div className="absolute top-4 left-4 z-20 pointer-events-none opacity-70 group-hover:opacity-100 transition-opacity">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-border text-[10px] font-mono text-text-secondary backdrop-blur-md">
-          <span className="text-gold font-bold">[VERIFIED]</span>
+          <span className="text-gold font-bold">VERIFIED</span>
           <span>Encrypted Session • 4K Stream</span>
         </div>
       </div>
@@ -147,8 +147,8 @@ export default function Player({
           onClick={togglePlay}
           className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 cursor-pointer backdrop-blur-[2px] transition-all"
         >
-          <div className="px-6 py-3 rounded-full bg-gold/90 hover:bg-gold text-black font-mono font-bold text-sm tracking-wider shadow-2xl shadow-gold/40 hover:scale-105 transition-all">
-            [ PLAY STREAM ]
+          <div className="px-6 py-3 rounded-full bg-gold/90 hover:bg-gold text-black font-mono font-bold text-xs sm:text-sm tracking-wider shadow-2xl shadow-gold/40 hover:scale-105 transition-all">
+            PLAY STREAM
           </div>
         </div>
       )}
@@ -214,8 +214,8 @@ export default function Player({
             <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-surface-2 border border-border text-gold rounded font-mono">
               4K 60FPS
             </span>
-            <button onClick={toggleFullscreen} className="px-2 py-1 bg-surface-2 hover:text-gold rounded border border-border transition-colors font-bold">
-              [ FULLSCREEN ]
+            <button onClick={toggleFullscreen} className="px-2.5 py-1 bg-surface-2 hover:text-gold rounded border border-border transition-colors font-bold text-[11px] sm:text-xs">
+              FULLSCREEN
             </button>
           </div>
         </div>

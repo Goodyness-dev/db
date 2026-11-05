@@ -71,7 +71,7 @@ export default async function VideoDetailPage({ params }: Props) {
               )}
               {video.isSubscriptionOnly && (
                 <span className="px-3 py-1 bg-gold/15 border border-gold text-gold text-xs font-bold uppercase rounded-full">
-                  [ VIP CLUB EXCLUSIVE ]
+                  VIP CLUB EXCLUSIVE
                 </span>
               )}
             </div>
@@ -95,7 +95,7 @@ export default async function VideoDetailPage({ params }: Props) {
                 <span>Full Uncut 4K</span>
               </div>
               <div>
-                <span className="text-emerald-400 font-bold">[ 18 U.S.C. 2257 VERIFIED ]</span>
+                <span className="text-emerald-400 font-bold">18 U.S.C. 2257 VERIFIED</span>
               </div>
             </div>
 

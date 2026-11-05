@@ -19,15 +19,26 @@ export default function Footer() {
             <p className="text-xs leading-relaxed text-text-muted">
               Private members club and exclusive digital storefront for creator DB. Cinematic ultra 4K drops, unscripted archives, and direct creator access.
             </p>
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-2 pt-2">
               <a
                 href="https://t.me/DBGOD1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border flex items-center gap-2 text-text-secondary hover:text-gold hover:border-gold/40 text-xs font-mono transition-colors"
+                className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border flex items-center gap-1.5 text-text-secondary hover:text-[#229ED9] hover:border-[#229ED9]/40 text-xs font-mono transition-colors"
                 title="Official Telegram @DBGOD1"
               >
-                <span>TG: @DBGOD1 [11.9K] &rarr;</span>
+                <span className="text-[#229ED9] font-bold">TG</span>
+                <span>@DBGOD1 &rarr;</span>
+              </a>
+              <a
+                href="https://x.com/DBGODPLAYHOUSE"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border flex items-center gap-1.5 text-text-secondary hover:text-white hover:border-white/40 text-xs font-mono transition-colors"
+                title="Official X @DBGODPLAYHOUSE"
+              >
+                <span className="font-bold text-white">X</span>
+                <span>@DBGODPLAYHOUSE &rarr;</span>
               </a>
             </div>
           </div>
@@ -45,7 +56,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/pricing" className="hover:text-gold transition-colors">
-                  [VIP] Club Membership
+                  VIP Club Membership
                 </Link>
               </li>
               <li>
@@ -68,10 +79,10 @@ export default function Footer() {
             </h4>
             <div className="space-y-2.5 text-xs text-text-muted">
               <div>
-                <span className="text-gold font-mono font-semibold">[BILLING]</span> Discreet billing statement: charges appear neutrally as &quot;VAULT DIGITAL SVCS&quot;.
+                <span className="text-gold font-mono font-semibold">BILLING •</span> Discreet billing statement: charges appear neutrally as &quot;VAULT DIGITAL SVCS&quot;.
               </div>
               <div>
-                <span className="text-emerald-400 font-mono font-semibold">[PRIVACY]</span> Zero buyer list sharing. Secure encrypted streaming with dynamic watermarking.
+                <span className="text-emerald-400 font-mono font-semibold">PRIVACY •</span> Zero buyer list sharing. Secure encrypted streaming with dynamic watermarking.
               </div>
             </div>
           </div>
@@ -114,7 +125,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-text-muted">
           <div>
-            <span className="font-mono text-gold font-bold mr-2">[18+ ONLY]</span>
+            <span className="font-mono text-gold font-bold mr-2">18+ ONLY •</span>
             <span>Strict adult platform. All depicted individuals were verified 18+ at time of filming.</span>
           </div>
           <p className="font-mono">© {new Date().getFullYear()} VAULT BY DB. ALL RIGHTS RESERVED.</p>

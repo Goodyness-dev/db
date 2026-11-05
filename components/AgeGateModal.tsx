@@ -33,7 +33,7 @@ export default function AgeGateModal() {
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-40 bg-gold/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-surface-2 border border-border text-gold font-mono font-bold text-xs uppercase tracking-widest">
-          [ 18+ AGE VERIFICATION ]
+          18+ AGE VERIFICATION
         </div>
 
         <div className="space-y-2">
