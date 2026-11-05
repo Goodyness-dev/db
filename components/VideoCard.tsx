@@ -143,10 +143,20 @@ export default function VideoCard({ video, isUnlocked = false }: VideoCardProps)
           </div>
 
           <Link
-            href={`/video/${video.slug}`}
-            className="px-3.5 py-1.5 bg-surface-2 hover:bg-gold hover:text-black border border-border hover:border-gold text-xs font-mono font-bold uppercase rounded-lg transition-all duration-200 text-text-primary"
+            href={
+              isUnlocked
+                ? `/watch/${video.id}`
+                : video.isSubscriptionOnly
+                ? '/pricing'
+                : `/checkout/simulate?videoId=${video.id}&itemTitle=${encodeURIComponent(video.title)}&amount=5000&isSubscription=false`
+            }
+            className={`px-3.5 py-1.5 text-xs font-mono font-bold uppercase rounded-lg transition-all duration-200 ${
+              isUnlocked
+                ? 'bg-surface-2 hover:bg-gold hover:text-black border border-border hover:border-gold text-text-primary'
+                : 'bg-gold hover:bg-gold-light text-black border border-gold shadow-md shadow-gold/20 hover:scale-105'
+            }`}
           >
-            {isUnlocked ? 'WATCH NOW &rarr;' : 'UNLOCK &rarr;'}
+            {isUnlocked ? 'WATCH NOW →' : video.isSubscriptionOnly ? 'JOIN VIP →' : 'UNLOCK $50 →'}
           </Link>
         </div>
       </div>

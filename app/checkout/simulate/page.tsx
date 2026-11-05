@@ -8,12 +8,13 @@ import { store } from '@/lib/db/store';
 function CheckoutSimulateContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('sessionId') || 'sim_default';
-  const orderId = searchParams.get('orderId') || 'ord-unknown';
-  const returnUrl = searchParams.get('returnUrl') || '/library';
+  const orderId = searchParams.get('orderId') || `ord-${Math.floor(1000 + Math.random() * 9000)}`;
+  const videoIdParam = searchParams.get('videoId');
+  const returnUrl = searchParams.get('returnUrl') || (videoIdParam ? `/watch/${videoIdParam}` : '/library');
   const isSubscription = searchParams.get('isSubscription') === 'true';
   const initialMethod = (searchParams.get('method') as PaymentMethod) || 'apple_pay';
   const emailParam = searchParams.get('email') || 'collector.vip@gmail.com';
-  const itemTitleParam = searchParams.get('itemTitle') || (isSubscription ? 'VIP Club Membership' : 'DROP 02: PENTHOUSE AFTERHOURS (RAW CUT)');
+  const itemTitleParam = searchParams.get('itemTitle') || (isSubscription ? 'VIP Club Membership' : 'DROP 01: DBGODPLAYHOUSE (4K)');
 
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'declined'>('idle');
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(initialMethod);
@@ -27,8 +28,9 @@ function CheckoutSimulateContent() {
   // Cash App sender handle
   const [customerCashtag, setCustomerCashtag] = useState('$fan_vip');
 
-  const amountDisplay = isSubscription ? '$29.99' : '$19.99';
-  const amountCents = isSubscription ? 2999 : 1999;
+  const amountParam = searchParams.get('amount');
+  const amountCents = amountParam ? parseInt(amountParam, 10) : (isSubscription ? 2999 : 5000);
+  const amountDisplay = isSubscription ? '$29.99' : `$${(amountCents / 100).toFixed(2)}`;
   const wireReference = `VAULT-${orderId.toUpperCase()}`;
 
   const copyToClipboard = (text: string, label: string) => {
@@ -48,12 +50,22 @@ function CheckoutSimulateContent() {
           email: emailParam,
           totalCents: amountCents,
           processor: selectedMethod,
+          videoId: videoIdParam || undefined,
           videoTitle: itemTitleParam,
           planId: isSubscription ? 'plan-monthly-vip' : undefined,
           cashAppCashtag: selectedMethod === 'cashapp' ? customerCashtag : undefined,
           wireReference: selectedMethod === 'wire' ? wireReference : undefined,
         });
+
         store.markOrderPaid(orderId);
+
+        if (videoIdParam) {
+          store.grantEntitlement(emailParam, videoIdParam, 'purchase', orderId);
+        }
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('vault_member_email', emailParam);
+        }
 
         // 2. Call backend webhook handler
         try {

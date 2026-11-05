@@ -171,10 +171,10 @@ export default function HomePage() {
 
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 font-mono">
                 <Link
-                  href={`/video/${featuredDrop.slug}`}
-                  className="px-6 py-3.5 bg-gold hover:bg-gold-light text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-gold/20 text-center"
+                  href={`/checkout/simulate?videoId=${featuredDrop.id}&itemTitle=${encodeURIComponent(featuredDrop.title)}&amount=5000&isSubscription=false`}
+                  className="px-6 py-3.5 bg-gold hover:bg-gold-light text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-gold/20 text-center hover:scale-105"
                 >
-                  UNLOCK FOR ${(featuredDrop.priceCents / 100).toFixed(2)} &rarr;
+                  UNLOCK FOR $50.00 →
                 </Link>
                 <Link
                   href={`/video/${featuredDrop.slug}`}
