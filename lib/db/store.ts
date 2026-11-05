@@ -6,7 +6,9 @@ import {
   Entitlement,
   PromoCode,
   ComplianceRecord,
-  TakedownRequest
+  TakedownRequest,
+  PaymentMethod,
+  PaymentConfig
 } from '../types';
 import {
   INITIAL_VIDEOS,
@@ -25,7 +27,6 @@ class VaultStore {
   private orders: Order[] = [...INITIAL_ORDERS];
   private subscriptions: Subscription[] = [...INITIAL_SUBSCRIPTIONS];
   private entitlements: Entitlement[] = [
-    // Pre-seed some entitlements for testing
     {
       id: 'ent-1',
       userId: 'usr-101',
@@ -43,7 +44,6 @@ class VaultStore {
       sourceId: 'sub-301',
       startsAt: '2026-10-15T00:00:00Z',
     },
-    // Demo user with access to DROP 01
     {
       id: 'ent-demo',
       userId: 'usr-demo',
@@ -57,6 +57,27 @@ class VaultStore {
   private promoCodes: PromoCode[] = [...INITIAL_PROMO_CODES];
   private complianceRecords: ComplianceRecord[] = [...INITIAL_COMPLIANCE_RECORDS];
   private takedowns: TakedownRequest[] = [...INITIAL_TAKEDOWNS];
+
+  // Payment configuration for Apple Pay, Cash App, Wire Transfer
+  private paymentConfig: PaymentConfig = {
+    cashAppCashtag: '$DBGOD1',
+    wireBankName: 'JPMorgan Chase Bank, N.A.',
+    wireAccountName: 'Vault Media Productions LLC / DB',
+    wireAccountNumber: '9482019482',
+    wireRoutingNumber: '021000021',
+    wireSwiftCode: 'CHASUS33',
+    applePayMerchantId: 'merchant.com.vaultbydb.production',
+    telegramHandle: 'DBGOD1',
+  };
+
+  getPaymentConfig(): PaymentConfig {
+    return this.paymentConfig;
+  }
+
+  updatePaymentConfig(updates: Partial<PaymentConfig>): PaymentConfig {
+    this.paymentConfig = { ...this.paymentConfig, ...updates };
+    return this.paymentConfig;
+  }
 
   // Videos
   getVideos(): Video[] {
@@ -117,10 +138,13 @@ class VaultStore {
     videoTitle?: string;
     planId?: string;
     promoCode?: string;
-    processor: 'card' | 'crypto' | 'mock';
+    processor: PaymentMethod;
+    cashAppCashtag?: string;
+    wireReference?: string;
   }): Order {
+    const orderId = `ord-${Math.floor(1000 + Math.random() * 9000)}`;
     const order: Order = {
-      id: `ord-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: orderId,
       userId: `usr-${Buffer.from(data.email).toString('hex').slice(0, 8)}`,
       email: data.email.toLowerCase().trim(),
       status: 'pending',
@@ -132,6 +156,8 @@ class VaultStore {
       videoTitle: data.videoTitle,
       planId: data.planId,
       promoCode: data.promoCode,
+      cashAppCashtag: data.cashAppCashtag || this.paymentConfig.cashAppCashtag,
+      wireReference: data.wireReference || `VAULT-${orderId.toUpperCase()}`,
       ipHash: Math.random().toString(16).substring(2, 14),
       createdAt: new Date().toISOString(),
     };

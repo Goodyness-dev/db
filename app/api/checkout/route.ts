@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/db/store';
 import { paymentAdapter } from '@/lib/payments/adapter';
+import { PaymentMethod } from '@/lib/types';
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,6 +43,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const validatedMethod: PaymentMethod = [
+      'card',
+      'apple_pay',
+      'cashapp',
+      'wire',
+      'crypto',
+    ].includes(paymentMethod)
+      ? paymentMethod
+      : 'card';
+
     // Create order
     const order = store.createOrder({
       email,
@@ -50,7 +61,7 @@ export async function POST(req: NextRequest) {
       videoTitle: itemTitle,
       planId,
       promoCode,
-      processor: paymentMethod === 'crypto' ? 'crypto' : 'card',
+      processor: validatedMethod,
     });
 
     const returnUrl = videoId
@@ -63,6 +74,7 @@ export async function POST(req: NextRequest) {
       email,
       itemTitle,
       returnUrl,
+      paymentMethod: validatedMethod,
     });
 
     return NextResponse.json({
@@ -70,6 +82,7 @@ export async function POST(req: NextRequest) {
       orderId: order.id,
       checkoutUrl: session.checkoutUrl,
       totalCents,
+      paymentMethod: validatedMethod,
     });
   } catch (err: unknown) {
     console.error('Checkout error:', err);

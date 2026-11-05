@@ -12,12 +12,15 @@ import {
   Coins,
   ArrowRight,
   Send,
-  Loader2
+  Loader2,
+  Building2,
+  Smartphone
 } from 'lucide-react';
+import { PaymentMethod } from '@/lib/types';
 
 export default function PricingPage() {
   const [email, setEmail] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'crypto'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('apple_pay');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -63,7 +66,7 @@ export default function PricingPage() {
           Choose How You Experience DB
         </h1>
         <p className="text-sm sm:text-base text-text-secondary leading-relaxed">
-          Pay as you go per individual drop, or join the VIP Club for unlimited all-access streaming to everything DB publishes.
+          Pay as you go per individual drop, or join the VIP Club for unlimited all-access streaming to everything DB publishes without being on file with OnlyFans.
         </p>
       </div>
 
@@ -100,7 +103,7 @@ export default function PricingPage() {
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Instant email delivery of secure access link</span>
+                <span>Apple Pay, Cash App, Wire, Card & Crypto accepted</span>
               </li>
               <li className="flex items-center gap-2.5 text-text-muted">
                 <X className="w-4 h-4 text-text-muted shrink-0" />
@@ -123,7 +126,6 @@ export default function PricingPage() {
 
         {/* Tier 2: VIP All-Access Membership (Highlighted) */}
         <div className="relative p-8 sm:p-10 rounded-3xl bg-surface-1 border-2 border-gold flex flex-col justify-between space-y-8 shadow-2xl shadow-gold/15 overflow-hidden">
-          {/* Top highlight ribbon */}
           <div className="absolute top-0 right-0 bg-gold text-black font-extrabold text-[11px] uppercase tracking-wider px-4 py-1 rounded-bl-xl shadow-md">
             Most Popular • 80% Savings
           </div>
@@ -151,7 +153,6 @@ export default function PricingPage() {
               <span className="text-[11px] text-text-muted">Billed monthly • Cancel anytime in 1 click</span>
             </div>
 
-            {/* Checklist */}
             <ul className="space-y-3 text-xs text-text-secondary">
               <li className="flex items-center gap-2.5 font-medium text-text-primary">
                 <CheckCircle2 className="w-4 h-4 text-gold shrink-0" />
@@ -163,7 +164,7 @@ export default function PricingPage() {
               </li>
               <li className="flex items-center gap-2.5 font-medium text-text-primary">
                 <CheckCircle2 className="w-4 h-4 text-gold shrink-0" />
-                <span>Private VIP Telegram group invite link</span>
+                <span>Private VIP Telegram group invite link (@DBGOD1)</span>
               </li>
               <li className="flex items-center gap-2.5 font-medium text-text-primary">
                 <CheckCircle2 className="w-4 h-4 text-gold shrink-0" />
@@ -176,7 +177,7 @@ export default function PricingPage() {
             </ul>
           </div>
 
-          {/* Quick Subscribe Form */}
+          {/* Quick Subscribe Form with Payment Options */}
           <form onSubmit={handleJoinVip} className="space-y-3 pt-2">
             <input
               type="email"
@@ -187,23 +188,60 @@ export default function PricingPage() {
               className="w-full px-4 py-3 bg-surface-2 border border-border focus:border-gold rounded-xl text-xs text-text-primary placeholder:text-text-muted outline-none transition-colors"
             />
 
+            {/* Payment Method Selector Grid */}
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('apple_pay')}
+                className={`py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 border transition-all ${
+                  paymentMethod === 'apple_pay'
+                    ? 'border-white bg-white text-black font-bold'
+                    : 'border-border bg-surface-2 text-text-secondary'
+                }`}
+              >
+                <span> Pay</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('cashapp')}
+                className={`py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 border transition-all ${
+                  paymentMethod === 'cashapp'
+                    ? 'border-emerald-400 bg-[#00D632]/20 text-emerald-400 font-bold'
+                    : 'border-border bg-surface-2 text-text-secondary'
+                }`}
+              >
+                <span>$ Cash App</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('wire')}
+                className={`py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 border transition-all ${
+                  paymentMethod === 'wire'
+                    ? 'border-gold bg-gold/15 text-gold font-bold'
+                    : 'border-border bg-surface-2 text-text-secondary'
+                }`}
+              >
+                <span>Wire</span>
+              </button>
+            </div>
+
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setPaymentMethod('card')}
-                className={`py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all ${
+                className={`py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 border transition-all ${
                   paymentMethod === 'card'
                     ? 'border-gold bg-gold/15 text-gold'
                     : 'border-border bg-surface-2 text-text-secondary'
                 }`}
               >
                 <CreditCard className="w-3.5 h-3.5" />
-                Debit / Card
+                Credit Card
               </button>
               <button
                 type="button"
                 onClick={() => setPaymentMethod('crypto')}
-                className={`py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all ${
+                className={`py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 border transition-all ${
                   paymentMethod === 'crypto'
                     ? 'border-gold bg-gold/15 text-gold'
                     : 'border-border bg-surface-2 text-text-secondary'
@@ -219,17 +257,37 @@ export default function PricingPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 bg-gold hover:bg-gold-light text-black font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-xl shadow-gold/25 hover:scale-[1.02] flex items-center justify-center gap-2 disabled:opacity-50"
+              className={`w-full py-4 font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2 disabled:opacity-50 ${
+                paymentMethod === 'apple_pay'
+                  ? 'bg-white hover:bg-neutral-100 text-black shadow-white/10'
+                  : paymentMethod === 'cashapp'
+                  ? 'bg-[#00D632] hover:bg-[#00BF2C] text-black shadow-[#00D632]/25'
+                  : 'bg-gold hover:bg-gold-light text-black shadow-gold/25'
+              }`}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Generating VIP Checkout...
                 </>
+              ) : paymentMethod === 'apple_pay' ? (
+                <>
+                  <span>Unlock VIP with Pay — $29.99/mo</span>
+                </>
+              ) : paymentMethod === 'cashapp' ? (
+                <>
+                  <span className="font-extrabold">$</span>
+                  <span>Unlock VIP with Cash App — $29.99/mo</span>
+                </>
+              ) : paymentMethod === 'wire' ? (
+                <>
+                  <Building2 className="w-4 h-4" />
+                  <span>Wire Transfer VIP Pass — $29.99/mo</span>
+                </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  Unlock VIP Vault Pass — $29.99/mo
+                  <span>Unlock VIP Vault Pass — $29.99/mo</span>
                 </>
               )}
             </button>
@@ -247,13 +305,13 @@ export default function PricingPage() {
           </div>
         </div>
         <a
-          href="https://t.me"
+          href="https://t.me/DBGOD1"
           target="_blank"
           rel="noopener noreferrer"
           className="px-4 py-2 bg-surface-2 hover:bg-surface-3 border border-border rounded-lg text-text-primary font-semibold flex items-center gap-2 shrink-0 transition-colors"
         >
           <Send className="w-3.5 h-3.5 text-[#229ED9]" />
-          Join 11K Telegram
+          Join DB Telegram (@DBGOD1)
         </a>
       </div>
     </div>

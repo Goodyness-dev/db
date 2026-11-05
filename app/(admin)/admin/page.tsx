@@ -19,12 +19,53 @@ import {
   Eye,
   Trash2,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  CreditCard,
+  Building,
+  Smartphone,
+  Save,
+  Check
 } from 'lucide-react';
 import { store } from '@/lib/db/store';
 import { INITIAL_VIDEOS, INITIAL_CATEGORIES } from '@/lib/db/mock-data';
 import AdminSidebar from '@/components/AdminSidebar';
-import { Video, Order, Subscription, ComplianceRecord, TakedownRequest } from '@/lib/types';
+import { Video, Order, Subscription, ComplianceRecord, TakedownRequest, PaymentConfig } from '@/lib/types';
+
+function PaymentMethodBadge({ method }: { method: string }) {
+  switch (method) {
+    case 'apple_pay':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-neutral-800 text-white border border-neutral-700">
+          <span></span> Apple Pay
+        </span>
+      );
+    case 'cashapp':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#00D632]/15 text-[#00D632] border border-[#00D632]/40">
+          Cash App
+        </span>
+      );
+    case 'wire':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-sky-500/15 text-sky-400 border border-sky-500/30">
+          Wire / ACH
+        </span>
+      );
+    case 'crypto':
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/15 text-amber-400 border border-amber-500/30">
+          Crypto
+        </span>
+      );
+    case 'card':
+    default:
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-purple-500/15 text-purple-300 border border-purple-500/30">
+          Card
+        </span>
+      );
+  }
+}
 
 export default function AdminPage() {
   const [currentTab, setCurrentTab] = useState('overview');
@@ -35,6 +76,10 @@ export default function AdminPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(store.getSubscriptions());
   const [complianceRecords, setComplianceRecords] = useState<ComplianceRecord[]>(store.getComplianceRecords());
   const [takedowns, setTakedowns] = useState<TakedownRequest[]>(store.getTakedowns());
+
+  // Payment configuration state
+  const [paymentConfig, setPaymentConfig] = useState<PaymentConfig>(store.getPaymentConfig());
+  const [configSaved, setConfigSaved] = useState(false);
 
   // Search & filter
   const [orderSearch, setOrderSearch] = useState('');
@@ -65,6 +110,21 @@ export default function AdminPage() {
     if (refunded) {
       setOrders([...store.getOrders()]);
     }
+  };
+
+  const handleMarkPaid = (orderId: string) => {
+    const paid = store.markOrderPaid(orderId);
+    if (paid) {
+      setOrders([...store.getOrders()]);
+      setSubscriptions([...store.getSubscriptions()]);
+    }
+  };
+
+  const handleSaveConfig = (e: React.FormEvent) => {
+    e.preventDefault();
+    store.updatePaymentConfig(paymentConfig);
+    setConfigSaved(true);
+    setTimeout(() => setConfigSaved(false), 3000);
   };
 
   const handleCancelSub = (subId: string) => {
@@ -275,7 +335,9 @@ export default function AdminPage() {
                           <td className="py-3 font-medium text-text-primary">{o.email}</td>
                           <td className="py-3 text-text-secondary">{o.videoTitle || 'VIP Subscription'}</td>
                           <td className="py-3 font-bold text-text-primary">${(o.totalCents / 100).toFixed(2)}</td>
-                          <td className="py-3 uppercase text-[11px] text-text-muted">{o.processor}</td>
+                          <td className="py-3">
+                            <PaymentMethodBadge method={o.processor} />
+                          </td>
                           <td className="py-3">
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                               {o.status}
@@ -392,6 +454,7 @@ export default function AdminPage() {
                       <th className="p-3.5">Customer Email</th>
                       <th className="p-3.5">Item</th>
                       <th className="p-3.5">Amount</th>
+                      <th className="p-3.5">Method</th>
                       <th className="p-3.5">IP Hash</th>
                       <th className="p-3.5">Status</th>
                       <th className="p-3.5 text-right">Action</th>
@@ -404,6 +467,15 @@ export default function AdminPage() {
                         <td className="p-3.5 font-medium text-text-primary">{ord.email}</td>
                         <td className="p-3.5 text-text-secondary">{ord.videoTitle || 'VIP Subscription'}</td>
                         <td className="p-3.5 font-bold text-text-primary">${(ord.totalCents / 100).toFixed(2)}</td>
+                        <td className="p-3.5">
+                          <PaymentMethodBadge method={ord.processor} />
+                          {ord.processor === 'cashapp' && ord.cashAppCashtag && (
+                            <div className="text-[10px] text-text-muted font-mono mt-0.5">{ord.cashAppCashtag}</div>
+                          )}
+                          {ord.processor === 'wire' && ord.wireReference && (
+                            <div className="text-[10px] text-text-muted font-mono mt-0.5">{ord.wireReference}</div>
+                          )}
+                        </td>
                         <td className="p-3.5 font-mono text-[10px] text-text-muted">{ord.ipHash}</td>
                         <td className="p-3.5">
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
@@ -414,7 +486,15 @@ export default function AdminPage() {
                             {ord.status}
                           </span>
                         </td>
-                        <td className="p-3.5 text-right">
+                        <td className="p-3.5 text-right space-x-2">
+                          {ord.status === 'pending' && (
+                            <button
+                              onClick={() => handleMarkPaid(ord.id)}
+                              className="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-semibold rounded-lg transition-colors"
+                            >
+                              Confirm Paid
+                            </button>
+                          )}
                           {ord.status === 'paid' && (
                             <button
                               onClick={() => handleRefund(ord.id)}
@@ -576,60 +656,275 @@ export default function AdminPage() {
           {/* TAB 6: SETTINGS */}
           {currentTab === 'settings' && (
             <div className="p-6 rounded-3xl bg-surface-1 border border-border space-y-8">
-              <div>
-                <h3 className="font-display font-bold text-xl text-text-primary uppercase">
-                  Processor & Alerts Configuration
-                </h3>
-                <p className="text-xs text-text-muted">Configure live merchant credentials and creator notification webhooks.</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-5">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-text-primary uppercase">
+                    Payment Options & Gateway Configuration
+                  </h3>
+                  <p className="text-xs text-text-muted">
+                    Configure receiving credentials for Apple Pay, Cash App ($Cashtag), Wire / ACH bank transfers, and Telegram alerts.
+                  </p>
+                </div>
+                {configSaved && (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold animate-pulse">
+                    <Check className="w-4 h-4" />
+                    Settings Saved Successfully
+                  </div>
+                )}
               </div>
 
-              {/* Telegram bot alerts */}
-              <div className="p-5 rounded-2xl bg-surface-2 border border-border space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#229ED9]/15 text-[#229ED9] flex items-center justify-center">
-                      <Send className="w-5 h-5" />
+              <form onSubmit={handleSaveConfig} className="space-y-8">
+                {/* 1. APPLE PAY */}
+                <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-black border border-white/20 text-white flex items-center justify-center font-bold text-lg">
+                        
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                          Apple Pay Merchant Gateway
+                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                            Active
+                          </span>
+                        </h4>
+                        <p className="text-xs text-text-muted">Enables one-touch FaceID / TouchID purchases for Safari, iOS, and macOS customers.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Merchant Identifier</label>
+                      <input
+                        type="text"
+                        value={paymentConfig.applePayMerchantId}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, applePayMerchantId: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-gold rounded-xl text-text-primary outline-none font-mono"
+                      />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-text-primary">Telegram Sales Alert Bot</h4>
-                      <p className="text-xs text-text-muted">Receive instant push notifications in your personal Telegram on every sale or renewal.</p>
+                      <label className="block text-text-secondary font-semibold mb-1">Domain Association Certificate</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value="https://vault-db-chi.vercel.app/.well-known/apple-developer-merchantid-domain-association"
+                        className="w-full px-3.5 py-2.5 bg-surface-1/60 border border-border rounded-xl text-text-muted font-mono text-[11px] truncate"
+                      />
                     </div>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={telegramAlertsEnabled}
-                    onChange={(e) => setTelegramAlertsEnabled(e.target.checked)}
-                    className="w-5 h-5 accent-gold cursor-pointer"
-                  />
                 </div>
-              </div>
 
-              {/* Payment processor credentials */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-                  Active High-Risk Processor Adapter
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div>
-                    <label className="block text-text-muted mb-1">Processor Type</label>
-                    <input
-                      type="text"
-                      readOnly
-                      value="Adult-Compliant Gateway Adapter (Mock / CCBill / SegPay)"
-                      className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-text-primary"
-                    />
+                {/* 2. CASH APP */}
+                <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#00D632]/15 text-[#00D632] flex items-center justify-center font-bold text-lg">
+                        $
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                          Cash App P2P Direct
+                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#00D632]/15 text-[#00D632] border border-[#00D632]/30">
+                            Instant Verification
+                          </span>
+                        </h4>
+                        <p className="text-xs text-text-muted">Buyers send directly to your Cashtag with their Order ID in the note for automatic fulfillment.</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-text-muted mb-1">Descriptor</label>
-                    <input
-                      type="text"
-                      readOnly
-                      value="VAULT DIGITAL SVCS (Active)"
-                      className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-gold font-mono"
-                    />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Creator Cashtag ($)</label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={paymentConfig.cashAppCashtag}
+                          onChange={(e) => setPaymentConfig({ ...paymentConfig, cashAppCashtag: e.target.value })}
+                          placeholder="$DBGOD1"
+                          className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-[#00D632] rounded-xl text-text-primary font-mono font-bold outline-none"
+                        />
+                      </div>
+                      <span className="text-[11px] text-text-muted mt-1 block">Live link: https://cash.app/{paymentConfig.cashAppCashtag}</span>
+                    </div>
+
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Payment Instructions to Buyer</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value="Enter Order ID in Cash App payment note for instant unlock"
+                        className="w-full px-3.5 py-2.5 bg-surface-1/60 border border-border rounded-xl text-text-muted text-[11px]"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+
+                {/* 3. WIRE TRANSFER / DIRECT ACH */}
+                <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center">
+                        <Building className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                          Bank Wire & High-Volume ACH Transfer
+                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                            Discreet / High Value
+                          </span>
+                        </h4>
+                        <p className="text-xs text-text-muted">For high-tier collectors and custom drops. Buyer receives these exact wire instructions.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Beneficiary Bank Name</label>
+                      <input
+                        type="text"
+                        value={paymentConfig.wireBankName}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, wireBankName: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-sky-400 rounded-xl text-text-primary outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Account Holder / Entity Name</label>
+                      <input
+                        type="text"
+                        value={paymentConfig.wireAccountName}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, wireAccountName: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-sky-400 rounded-xl text-text-primary outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Account Number</label>
+                      <input
+                        type="text"
+                        value={paymentConfig.wireAccountNumber}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, wireAccountNumber: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-sky-400 rounded-xl text-text-primary outline-none font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Routing Number (ABA / FedWire)</label>
+                      <input
+                        type="text"
+                        value={paymentConfig.wireRoutingNumber}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, wireRoutingNumber: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-sky-400 rounded-xl text-text-primary outline-none font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">SWIFT / BIC Code (International Wires)</label>
+                      <input
+                        type="text"
+                        value={paymentConfig.wireSwiftCode}
+                        onChange={(e) => setPaymentConfig({ ...paymentConfig, wireSwiftCode: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-surface-1 border border-border focus:border-sky-400 rounded-xl text-text-primary outline-none font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Wire Reference Policy</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value="Automated reference generator prefix: VAULT-ORD-XXXX"
+                        className="w-full px-3.5 py-2.5 bg-surface-1/60 border border-border rounded-xl text-text-muted font-mono text-[11px]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. TELEGRAM NOTIFICATIONS */}
+                <div className="p-6 rounded-2xl bg-surface-2 border border-border space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#229ED9]/15 text-[#229ED9] flex items-center justify-center">
+                        <Send className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-text-primary">Telegram Creator Dispatch (@DBGOD1)</h4>
+                        <p className="text-xs text-text-muted">Receive instant push notifications in your personal Telegram on every sale or renewal.</p>
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={telegramAlertsEnabled}
+                      onChange={(e) => setTelegramAlertsEnabled(e.target.checked)}
+                      className="w-5 h-5 accent-gold cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Creator Telegram Handle</label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">@</span>
+                        <input
+                          type="text"
+                          value={paymentConfig.telegramHandle}
+                          onChange={(e) => setPaymentConfig({ ...paymentConfig, telegramHandle: e.target.value })}
+                          className="w-full pl-8 pr-3.5 py-2.5 bg-surface-1 border border-border focus:border-gold rounded-xl text-text-primary outline-none font-mono font-bold"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-text-secondary font-semibold mb-1">Public Broadcast Channel</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value="https://t.me/DBGOD1 (11.9K+ Viewers)"
+                        className="w-full px-3.5 py-2.5 bg-surface-1/60 border border-border rounded-xl text-text-muted text-[11px]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. PROCESSOR ADAPTER DESCRIPTOR */}
+                <div className="space-y-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary">
+                    Card & Crypto Processor Descriptors
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <label className="block text-text-muted mb-1">Processor Type</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value="Adult-Compliant Gateway Adapter (Mock / CCBill / SegPay)"
+                        className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-text-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-text-muted mb-1">Card Statement Descriptor</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value="VAULT DIGITAL SVCS (Active)"
+                        className="w-full px-3 py-2 bg-surface-2 border border-border rounded-lg text-gold font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-gold hover:bg-gold-light text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-gold/20 flex items-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    Save Payment Settings
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>

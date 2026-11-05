@@ -1,9 +1,12 @@
+import { PaymentMethod } from '../types';
+
 export interface CheckoutSession {
   sessionId: string;
   checkoutUrl: string;
   orderId: string;
   amountCents: number;
   currency: string;
+  paymentMethod?: PaymentMethod;
   expiresAt: string;
 }
 
@@ -13,6 +16,7 @@ export interface PaymentWebhookResult {
   eventType?: 'payment.succeeded' | 'payment.failed' | 'subscription.created' | 'subscription.renewed' | 'subscription.canceled';
   orderId?: string;
   subscriptionId?: string;
+  paymentMethod?: PaymentMethod;
   error?: string;
 }
 
@@ -23,6 +27,7 @@ export interface PaymentProcessorAdapter {
     email: string;
     itemTitle: string;
     returnUrl: string;
+    paymentMethod?: PaymentMethod;
   }): Promise<CheckoutSession>;
 
   createSubscriptionCheckout(params: {
@@ -31,6 +36,7 @@ export interface PaymentProcessorAdapter {
     amountCents: number;
     email: string;
     returnUrl: string;
+    paymentMethod?: PaymentMethod;
   }): Promise<CheckoutSession>;
 
   verifyWebhook(headers: Record<string, string>, rawBody: string): Promise<PaymentWebhookResult>;

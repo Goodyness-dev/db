@@ -39,7 +39,7 @@ export default function Navbar() {
               VAULT
             </span>
             <span className="text-[10px] uppercase tracking-widest text-gold font-semibold -mt-1">
-              BY DB
+              BY DB (@DBGOD1)
             </span>
           </div>
         </Link>
@@ -76,17 +76,17 @@ export default function Navbar() {
 
         {/* Right Action Buttons */}
         <div className="hidden md:flex items-center gap-3.5">
-          {/* Telegram Funnel Badge */}
+          {/* Telegram Funnel Badge linked to @DBGOD1 */}
           <a
-            href="https://t.me"
+            href="https://t.me/DBGOD1"
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-1.5 bg-surface-2 hover:bg-surface-3 border border-border hover:border-gold/30 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary transition-all flex items-center gap-2"
           >
             <Send className="w-3.5 h-3.5 text-[#229ED9]" />
-            <span>Telegram</span>
+            <span>@DBGOD1</span>
             <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#229ED9]/15 text-[#229ED9] rounded-full">
-              11K+
+              11.9K
             </span>
           </a>
 
@@ -166,13 +166,13 @@ export default function Navbar() {
           </Link>
           <div className="pt-2">
             <a
-              href="https://t.me"
+              href="https://t.me/DBGOD1"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-2.5 bg-surface-2 border border-border rounded-xl text-sm font-medium text-text-primary flex items-center justify-center gap-2"
             >
               <Send className="w-4 h-4 text-[#229ED9]" />
-              Join DB's Telegram Channel (11k+ Members)
+              Join DBGODPLAYHOUSE (@DBGOD1 • 11.9k+ Fans)
             </a>
           </div>
         </div>

@@ -22,13 +22,14 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://t.me"
+                href="https://t.me/DBGOD1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-text-secondary hover:text-gold hover:border-gold/40 transition-colors"
-                title="Official Telegram"
+                className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border flex items-center gap-2 text-text-secondary hover:text-gold hover:border-gold/40 text-xs transition-colors"
+                title="Official Telegram @DBGOD1"
               >
-                <Send className="w-4 h-4 text-[#229ED9]" />
+                <Send className="w-3.5 h-3.5 text-[#229ED9]" />
+                <span>@DBGOD1</span>
               </a>
             </div>
           </div>

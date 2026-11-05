@@ -11,9 +11,11 @@ import {
   ArrowRight,
   ShieldCheck,
   Tag,
-  Loader2
+  Loader2,
+  Building2,
+  Smartphone
 } from 'lucide-react';
-import { Video } from '@/lib/types';
+import { Video, PaymentMethod } from '@/lib/types';
 
 interface BuyPanelProps {
   video: Video;
@@ -22,7 +24,7 @@ interface BuyPanelProps {
 
 export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
   const [email, setEmail] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'crypto'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('apple_pay');
   const [promoInput, setPromoInput] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; percentOff: number } | null>(null);
   const [promoError, setPromoError] = useState('');
@@ -76,7 +78,6 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
         throw new Error(data.error || 'Failed to initiate checkout.');
       }
 
-      // Redirect to simulator / processor
       window.location.href = data.checkoutUrl;
     } catch (err: unknown) {
       setErrorMessage((err as Error)?.message || 'Payment initiation failed.');
@@ -99,7 +100,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
             Locked Inside The Vault
           </h3>
           <p className="mt-2 text-xs text-text-secondary leading-relaxed">
-            This video is reserved solely for DB VIP members. One monthly pass unlocks this drop, the entire 15+ video vault archive, and all future weekly releases.
+            Reserved solely for DB VIP members. One monthly pass unlocks this drop, the entire 15+ video vault archive, and all upcoming releases without being on file with OnlyFans.
           </p>
         </div>
 
@@ -110,7 +111,7 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
           </div>
           <div className="text-[11px] text-text-muted flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-gold" />
-            <span>Cancel anytime with 1 click. Zero contracts.</span>
+            <span>Apple Pay, Cash App, Wire & Crypto accepted. Cancel anytime.</span>
           </div>
         </div>
 
@@ -152,9 +153,12 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
       {/* Guest Checkout Form */}
       <form onSubmit={handleCheckout} className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1.5">
-            Your Email (for instant private access link)
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-xs font-medium text-text-secondary">
+              Your Email (Private Access Link)
+            </label>
+            <span className="text-[10px] text-gold">100% Discreet • Not on OF file</span>
+          </div>
           <input
             type="email"
             required
@@ -165,37 +169,115 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
           />
         </div>
 
-        {/* Payment Method Selector */}
+        {/* Payment Method Selector Grid */}
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1.5">
+          <label className="block text-xs font-medium text-text-secondary mb-2">
             Select Payment Method
           </label>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {/* Apple Pay Button */}
+            <button
+              type="button"
+              onClick={() => setPaymentMethod('apple_pay')}
+              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                paymentMethod === 'apple_pay'
+                  ? 'border-white bg-white text-black shadow-md'
+                  : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <span className="font-bold"> Pay</span>
+            </button>
+
+            {/* Cash App */}
+            <button
+              type="button"
+              onClick={() => setPaymentMethod('cashapp')}
+              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                paymentMethod === 'cashapp'
+                  ? 'border-emerald-400 bg-[#00D632]/15 text-emerald-400 shadow-md'
+                  : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <span className="text-emerald-400 font-black">$</span>
+              <span>Cash App</span>
+            </button>
+
+            {/* Wire Transfer */}
+            <button
+              type="button"
+              onClick={() => setPaymentMethod('wire')}
+              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                paymentMethod === 'wire'
+                  ? 'border-gold bg-gold/15 text-gold shadow-md'
+                  : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Wire / Bank</span>
+            </button>
+
+            {/* Credit Card */}
             <button
               type="button"
               onClick={() => setPaymentMethod('card')}
-              className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                 paymentMethod === 'card'
-                  ? 'border-gold bg-gold/10 text-gold shadow-sm'
+                  ? 'border-gold bg-gold/15 text-gold shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <CreditCard className="w-4 h-4" />
-              Debit / Card
+              <CreditCard className="w-3.5 h-3.5" />
+              <span>Credit Card</span>
             </button>
+
+            {/* Crypto */}
             <button
               type="button"
               onClick={() => setPaymentMethod('crypto')}
-              className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all col-span-2 sm:col-span-2 ${
                 paymentMethod === 'crypto'
-                  ? 'border-gold bg-gold/10 text-gold shadow-sm'
+                  ? 'border-gold bg-gold/15 text-gold shadow-md'
                   : 'border-border bg-surface-2 text-text-secondary hover:text-text-primary'
               }`}
             >
-              <Coins className="w-4 h-4" />
-              Crypto (USDT / BTC)
+              <Coins className="w-3.5 h-3.5" />
+              <span>Crypto (USDT / BTC)</span>
             </button>
           </div>
+        </div>
+
+        {/* Context helper for selected method */}
+        <div className="p-2.5 rounded-xl bg-surface-2/60 border border-border/70 text-[11px] text-text-muted">
+          {paymentMethod === 'apple_pay' && (
+            <div className="flex items-center gap-2 text-text-primary">
+              <Smartphone className="w-3.5 h-3.5 text-gold" />
+              <span>Instant 1-tap checkout with Apple Wallet & Touch/Face ID.</span>
+            </div>
+          )}
+          {paymentMethod === 'cashapp' && (
+            <div className="flex items-center gap-2 text-emerald-400">
+              <span className="font-bold text-xs">$</span>
+              <span>Send directly to DB&apos;s verified Cashtag <strong>$DBGOD1</strong>. Instant auto-unlock.</span>
+            </div>
+          )}
+          {paymentMethod === 'wire' && (
+            <div className="flex items-center gap-2 text-gold">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Direct Domestic & International Wire / ACH. Invoice reference generated on next step.</span>
+            </div>
+          )}
+          {paymentMethod === 'card' && (
+            <div className="flex items-center gap-2 text-text-secondary">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Discreet neutral statement: &quot;VAULT DIGITAL SVCS&quot;.</span>
+            </div>
+          )}
+          {paymentMethod === 'crypto' && (
+            <div className="flex items-center gap-2 text-amber-300">
+              <Coins className="w-3.5 h-3.5" />
+              <span>Zero-trail payment via USDT (TRC-20 / ERC-20) or Bitcoin.</span>
+            </div>
+          )}
         </div>
 
         {/* Promo code accordion */}
@@ -235,17 +317,37 @@ export default function BuyPanel({ video, onSuccess }: BuyPanelProps) {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-4 bg-gold hover:bg-gold-light text-black font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-gold/20 hover:scale-[1.01] transition-all disabled:opacity-50"
+          className={`w-full py-4 font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50 ${
+            paymentMethod === 'apple_pay'
+              ? 'bg-white hover:bg-neutral-100 text-black shadow-white/10 hover:scale-[1.01]'
+              : paymentMethod === 'cashapp'
+              ? 'bg-[#00D632] hover:bg-[#00BF2C] text-black shadow-[#00D632]/25 hover:scale-[1.01]'
+              : 'bg-gold hover:bg-gold-light text-black shadow-gold/20 hover:scale-[1.01]'
+          }`}
         >
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Connecting Secure Gateway...
+              Connecting Gateway...
+            </>
+          ) : paymentMethod === 'apple_pay' ? (
+            <>
+              <span>Pay with Pay — ${(finalCents / 100).toFixed(2)}</span>
+            </>
+          ) : paymentMethod === 'cashapp' ? (
+            <>
+              <span className="font-extrabold">$</span>
+              <span>Pay with Cash App — ${(finalCents / 100).toFixed(2)}</span>
+            </>
+          ) : paymentMethod === 'wire' ? (
+            <>
+              <Building2 className="w-4 h-4" />
+              <span>Get Wire Details — ${(finalCents / 100).toFixed(2)}</span>
             </>
           ) : (
             <>
               <Lock className="w-4 h-4" />
-              Instant Unlock — ${(finalCents / 100).toFixed(2)}
+              <span>Instant Unlock — ${(finalCents / 100).toFixed(2)}</span>
             </>
           )}
         </button>

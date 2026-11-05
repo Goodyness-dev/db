@@ -44,15 +44,20 @@ export default function HomePage() {
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 py-20">
           {/* Telegram badge pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-2/90 border border-gold/30 text-xs text-text-primary backdrop-blur-md shadow-lg">
+          <a
+            href="https://t.me/DBGOD1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-2/90 border border-gold/30 text-xs text-text-primary backdrop-blur-md shadow-lg hover:border-gold transition-colors"
+          >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-semibold text-gold">NEW DROP LIVE</span>
             <span className="text-text-muted">•</span>
             <span className="text-text-secondary flex items-center gap-1">
               <Send className="w-3 h-3 text-[#229ED9]" />
-              11,400+ on DB Telegram
+              11.9K+ on DBGODPLAYHOUSE (@DBGOD1)
             </span>
-          </div>
+          </a>
 
           {/* Headline */}
           <div className="space-y-4">
@@ -100,8 +105,8 @@ export default function HomePage() {
               <span className="text-xs text-text-muted">Discreet Statement</span>
             </div>
             <div className="p-3">
-              <span className="block font-display font-black text-xl text-text-primary">Card & Crypto</span>
-              <span className="text-xs text-text-muted">USDT / BTC Accepted</span>
+              <span className="block font-display font-black text-xl text-text-primary">Apple Pay & Cash App</span>
+              <span className="text-xs text-text-muted">Plus Wire & USDT Accepted</span>
             </div>
           </div>
         </div>

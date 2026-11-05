@@ -44,6 +44,8 @@ export interface Category {
 
 export type OrderStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'chargeback';
 
+export type PaymentMethod = 'card' | 'apple_pay' | 'cashapp' | 'wire' | 'crypto' | 'mock';
+
 export interface Order {
   id: string;
   userId: string;
@@ -51,13 +53,15 @@ export interface Order {
   status: OrderStatus;
   totalCents: number;
   currency: string;
-  processor: 'card' | 'crypto' | 'mock';
+  processor: PaymentMethod;
   processorSessionId: string;
   videoId?: string;
   videoTitle?: string;
   planId?: string;
   promoCode?: string;
   discountCents?: number;
+  cashAppCashtag?: string;
+  wireReference?: string;
   ipHash: string;
   createdAt: string;
   paidAt?: string;
@@ -126,4 +130,15 @@ export interface TakedownRequest {
   reason: string;
   status: 'pending' | 'investigating' | 'resolved' | 'rejected';
   createdAt: string;
+}
+
+export interface PaymentConfig {
+  cashAppCashtag: string;
+  wireBankName: string;
+  wireAccountName: string;
+  wireAccountNumber: string;
+  wireRoutingNumber: string;
+  wireSwiftCode: string;
+  applePayMerchantId: string;
+  telegramHandle: string;
 }
